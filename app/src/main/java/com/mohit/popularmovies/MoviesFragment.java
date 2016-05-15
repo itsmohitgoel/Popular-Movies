@@ -39,7 +39,7 @@ public class MoviesFragment extends Fragment implements IAsyncListener{
         mGridView.setAdapter(mAdapter);
 
         //Start download
-        FetchMoviesAsync moviesAsync = new FetchMoviesAsync(mGridList);
+        FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this);
         moviesAsync.mListener = this;
         moviesAsync.execute(TEST_URL);
 
