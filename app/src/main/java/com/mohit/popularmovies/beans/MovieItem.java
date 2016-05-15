@@ -22,7 +22,7 @@ public class MovieItem {
     // Getters
     public String getTitle() { return mTitle; }
 
-    public String getPoster() { return mBackdropPath; }
+    public String getBackdropPath() { return mBackdropPath; }
 
     public String getPosterPath() { return mPosterPath; }
 

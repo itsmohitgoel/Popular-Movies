@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.mohit.popularmovies.beans.MovieItem;
 import com.mohit.popularmovies.listeners.IAsyncListener;
+import com.mohit.popularmovies.utils.PopConstants;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,10 +44,10 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
         try {
             //Make url and open connection
-            Uri baseURI = Uri.parse("http://api.themoviedb.org/3/discover/movie?");
+            Uri baseURI = Uri.parse(PopConstants.BASE_URL);
             Uri.Builder builder = baseURI.buildUpon()
-                    .appendQueryParameter("api_key", "YOUR_API_KEY")
-                    .appendQueryParameter("sort_by", "popularity.desc");
+                    .appendQueryParameter(PopConstants.API_KEY_PARAM, PopConstants.API_KEY)
+                    .appendQueryParameter(PopConstants.SORT_PARAM, "popularity.desc");
             Uri finalUri = builder.build();
 
             URL url = new URL(finalUri.toString());
@@ -109,12 +110,12 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject movieJson = jsonArray.getJSONObject(i);
                 movie = new MovieItem();
-                movie.setTitle(movieJson.getString("title"));
-                movie.setPosterPath(movieJson.getString("poster_path"));
-                movie.setBackdropPath(movieJson.getString("backdrop_path"));
-                movie.setSummary(movieJson.getString("overview"));
-                movie.setReleaseDate(movieJson.getString("release_date"));
-                movie.setRating(movieJson.getString("vote_average"));
+                movie.setTitle(movieJson.getString(PopConstants.ORIGINAL_TITLE));
+                movie.setPosterPath(movieJson.getString(PopConstants.POSTER_PATH));
+                movie.setBackdropPath(movieJson.getString(PopConstants.BACKDROP_PATH));
+                movie.setSummary(movieJson.getString(PopConstants.OVERVIEW));
+                movie.setReleaseDate(movieJson.getString(PopConstants.RELEASE_DATE));
+                movie.setRating(movieJson.getString(PopConstants.VOTE_AVERAGE));
 
                 moviesList.add(movie);
             }

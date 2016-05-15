@@ -62,7 +62,6 @@ public class MoviesAdapter extends ArrayAdapter<MovieItem> {
             holder = (ViewHolder) row.getTag();
         }
 
-        // TODO
         MovieItem item = moviesList.get(position);
         Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185" + item.getPosterPath()).into(holder.imageView);
         return row;

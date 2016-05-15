@@ -10,6 +10,7 @@ import android.widget.GridView;
 import com.mohit.popularmovies.adapters.MoviesAdapter;
 import com.mohit.popularmovies.beans.MovieItem;
 import com.mohit.popularmovies.listeners.IAsyncListener;
+import com.mohit.popularmovies.utils.PopUtility;
 import com.mohit.popularmovies.webservices.FetchMoviesAsync;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MoviesFragment extends Fragment implements IAsyncListener{
+public class MoviesFragment extends Fragment implements IAsyncListener {
     private final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private GridView mGridView;
     private MoviesAdapter mAdapter;
@@ -39,9 +40,11 @@ public class MoviesFragment extends Fragment implements IAsyncListener{
         mGridView.setAdapter(mAdapter);
 
         //Start download
-        FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this);
-        moviesAsync.mListener = this;
-        moviesAsync.execute(TEST_URL);
+        if (PopUtility.isNetworkConnected(getActivity())) {
+            FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this);
+            moviesAsync.mListener = this;
+            moviesAsync.execute(TEST_URL);
+        }
 
         return rootView;
     }
