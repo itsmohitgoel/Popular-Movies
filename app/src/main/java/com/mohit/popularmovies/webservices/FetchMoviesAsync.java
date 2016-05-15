@@ -20,16 +20,21 @@ import java.net.URL;
 import java.util.ArrayList;
 
 /**
+ * Perform Networking operations
  * Created by Mohit on 15-05-2016.
  */
 public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
     private final String LOG_TAG = FetchMoviesAsync.class.getSimpleName();
-    private ArrayList<MovieItem> mDataList;
-    public IAsyncListener mListener;
+    public IAsyncListener mListener; //Listener to send data back to activity
+    private ArrayList<MovieItem> moviesList; // To be updated via Jsonparsing
 
-    public FetchMoviesAsync(ArrayList<MovieItem> mList) {
-        this.mDataList = mList;
+    public FetchMoviesAsync(IAsyncListener listener) {
+        if (listener == null) {
+            throw new IllegalArgumentException("Listener argument can't be null");
+        }
+        mListener = listener;
     }
+
     @Override
     protected Void doInBackground(String... params) {
 
@@ -38,9 +43,13 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
         try {
             //Make url and open connection
-            Uri baseURI = Uri.parse(params[0]);
-            URL url = new URL(baseURI.toString());
+            Uri baseURI = Uri.parse("http://api.themoviedb.org/3/discover/movie?");
+            Uri.Builder builder = baseURI.buildUpon()
+                    .appendQueryParameter("api_key", "YOUR_API_KEY")
+                    .appendQueryParameter("sort_by", "popularity.desc");
+            Uri finalUri = builder.build();
 
+            URL url = new URL(finalUri.toString());
             urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestMethod("GET");
             urlConnection.connect();
@@ -54,22 +63,21 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
             reader = new BufferedReader(isr);
 
             String line = "";
-            StringBuffer bufferString = new StringBuffer();
+            StringBuilder bufferString = new StringBuilder();
 
             while ((line = reader.readLine()) != null) {
                 bufferString.append(line).append("\n");
             }
 
             if (bufferString.length() == 0) {
-                return  null;
+                return null;
             }
             String moviesJsonString = bufferString.toString();
             parseJson(moviesJsonString);
-
         } catch (IOException e) {
             e.printStackTrace();
             Log.e(LOG_TAG, "Error in downloading");
-        }finally {
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
@@ -87,25 +95,28 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        mListener.onAsyncEnd(mDataList);
+        mListener.onAsyncEnd(moviesList);
     }
 
     private void parseJson(String result) {
         try {
-            JSONObject response = new JSONObject(result);
-            JSONArray posts = response.optJSONArray("posts");
-            MovieItem item;
-            for (int i = 0; i < posts.length(); i++) {
-                JSONObject post = posts.optJSONObject(i);
-                String title = post.optString("title");
-                item = new MovieItem();
-                JSONArray attachments = post.getJSONArray("attachments");
-                if (null != attachments && attachments.length() > 0) {
-                    JSONObject attachment = attachments.getJSONObject(0);
-                    if (attachment != null)
-                        item.setPosterURL(attachment.getString("url"));
-                }
-                mDataList.add(item);
+            JSONObject jsonObject = new JSONObject(result);
+            JSONArray jsonArray = jsonObject.getJSONArray("results");
+
+            moviesList = new ArrayList<>(jsonArray.length());
+            MovieItem movie;
+
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject movieJson = jsonArray.getJSONObject(i);
+                movie = new MovieItem();
+                movie.setTitle(movieJson.getString("title"));
+                movie.setPosterPath(movieJson.getString("poster_path"));
+                movie.setBackdropPath(movieJson.getString("backdrop_path"));
+                movie.setSummary(movieJson.getString("overview"));
+                movie.setReleaseDate(movieJson.getString("release_date"));
+                movie.setRating(movieJson.getString("vote_average"));
+
+                moviesList.add(movie);
             }
         } catch (JSONException e) {
             e.printStackTrace();
