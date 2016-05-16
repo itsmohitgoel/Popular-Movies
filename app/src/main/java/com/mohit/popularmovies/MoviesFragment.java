@@ -1,6 +1,8 @@
 package com.mohit.popularmovies;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +26,6 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
     private GridView mGridView;
     private MoviesAdapter mAdapter;
     private ArrayList<MovieItem> mGridList;
-    private String TEST_URL = "http://javatechig.com/?json=get_recent_posts&count=45";
 
     public MoviesFragment() {
     }
@@ -40,17 +41,29 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
         mGridView.setAdapter(mAdapter);
 
         //Start download
-        if (PopUtility.isNetworkConnected(getActivity())) {
-            FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this);
-            moviesAsync.mListener = this;
-            moviesAsync.execute(TEST_URL);
-        }
+//        updateMoviesData();
 
         return rootView;
+    }
+
+    private void updateMoviesData() {
+        if (PopUtility.isNetworkConnected(getActivity())) {
+            FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this);
+            SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sort_by_preference = mPreferences.getString(getString(R.string.pref_sort_key),
+                    getString(R.string.pref_sort_default));
+            moviesAsync.execute(sort_by_preference);
+        }
     }
 
     @Override
     public void onAsyncEnd(List<MovieItem> movieList) {
         mAdapter.setMoviesList((ArrayList<MovieItem>) movieList);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateMoviesData();
     }
 }

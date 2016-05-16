@@ -42,12 +42,15 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
+        if (PopConstants.API_KEY.equals("ADD Your API KEY HERE")) {
+            throw new IllegalArgumentException("Please Enter your api key in PopConstants Class !");
+        }
         try {
             //Make url and open connection
             Uri baseURI = Uri.parse(PopConstants.BASE_URL);
             Uri.Builder builder = baseURI.buildUpon()
                     .appendQueryParameter(PopConstants.API_KEY_PARAM, PopConstants.API_KEY)
-                    .appendQueryParameter(PopConstants.SORT_PARAM, "popularity.desc");
+                    .appendQueryParameter(PopConstants.SORT_PARAM, params[0]);
             Uri finalUri = builder.build();
 
             URL url = new URL(finalUri.toString());
@@ -96,7 +99,9 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        mListener.onAsyncEnd(moviesList);
+        if (moviesList != null) {
+            mListener.onAsyncEnd(moviesList);
+        }
     }
 
     private void parseJson(String result) {
