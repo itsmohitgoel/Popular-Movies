@@ -39,7 +39,7 @@ public class MoviesAdapter extends ArrayAdapter<MovieItem> {
 
     @Override
     public MovieItem getItem(int position) {
-        return super.getItem(position);
+        return moviesList.get(position);
     }
 
     //ViewHolder class for smoother scrolling

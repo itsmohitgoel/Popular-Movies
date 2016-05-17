@@ -1,5 +1,6 @@
 package com.mohit.popularmovies;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -7,11 +8,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.mohit.popularmovies.adapters.MoviesAdapter;
 import com.mohit.popularmovies.beans.MovieItem;
 import com.mohit.popularmovies.listeners.IAsyncListener;
+import com.mohit.popularmovies.utils.PopConstants;
 import com.mohit.popularmovies.utils.PopUtility;
 import com.mohit.popularmovies.webservices.FetchMoviesAsync;
 
@@ -39,6 +42,15 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
         mGridList = new ArrayList<MovieItem>();
         mAdapter = new MoviesAdapter(getActivity(), mGridList);
         mGridView.setAdapter(mAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                MovieItem movie = mAdapter.getItem(position);
+                Intent intentMovie = new Intent(getActivity(), MovieDetailActivity.class);
+                intentMovie.putExtra(PopConstants.MOVIE, movie);
+                startActivity(intentMovie);
+            }
+        });
 
         //Start download
 //        updateMoviesData();
