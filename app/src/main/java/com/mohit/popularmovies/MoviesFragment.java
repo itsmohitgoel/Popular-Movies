@@ -1,10 +1,12 @@
 package com.mohit.popularmovies;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +29,19 @@ import java.util.List;
 public class MoviesFragment extends Fragment implements IAsyncListener {
     private final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private GridView mGridView;
-    private MoviesAdapter mAdapter;
+    private MoviesAdapter mAdapter; //Custom Adapter for movies data
     private ArrayList<MovieItem> mGridList;
+    private ProgressDialog mProgressBar;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null || !savedInstanceState.containsKey(PopConstants.MOVIES_KEY)) {
+            mGridList =  new ArrayList<MovieItem>();
+        }else {
+            mGridList = savedInstanceState.getParcelableArrayList(PopConstants.MOVIES_KEY);
+        }
+    }
 
     public MoviesFragment() {
     }
@@ -39,7 +52,6 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
 
-        mGridList = new ArrayList<MovieItem>();
         mAdapter = new MoviesAdapter(getActivity(), mGridList);
         mGridView.setAdapter(mAdapter);
         mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -47,13 +59,10 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 MovieItem movie = mAdapter.getItem(position);
                 Intent intentMovie = new Intent(getActivity(), MovieDetailActivity.class);
-                intentMovie.putExtra(PopConstants.MOVIE, movie);
+                intentMovie.putExtra(PopConstants.MOVIE_KEY, movie);
                 startActivity(intentMovie);
             }
         });
-
-        //Start download
-//        updateMoviesData();
 
         return rootView;
     }
@@ -69,13 +78,36 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
     }
 
     @Override
+    public void onAsyncBegin() {
+        Log.d(LOG_TAG, "on Async Begin");
+        if (mProgressBar == null) {
+            mProgressBar = ProgressDialog.show(getActivity(), "Loading", "Please wait...");
+            Log.d(LOG_TAG, "Progress Begin");
+        }
+    }
+
+    @Override
     public void onAsyncEnd(List<MovieItem> movieList) {
+            Log.d(LOG_TAG, "on Async End");
+        if(mProgressBar != null){
+            mProgressBar.cancel();
+            mProgressBar = null;
+            Log.d(LOG_TAG, "Progress End");
+        }
+        mGridList = (ArrayList<MovieItem>) movieList;
+        mAdapter.clear();
         mAdapter.setMoviesList((ArrayList<MovieItem>) movieList);
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
+    public void onStart() {
+        super.onStart();
         updateMoviesData();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(PopConstants.MOVIES_KEY, mGridList);
+        super.onSaveInstanceState(outState);
     }
 }

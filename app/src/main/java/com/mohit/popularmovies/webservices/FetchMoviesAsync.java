@@ -37,6 +37,12 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mListener.onAsyncBegin();
+    }
+
+    @Override
     protected Void doInBackground(String... params) {
 
         HttpURLConnection urlConnection = null;

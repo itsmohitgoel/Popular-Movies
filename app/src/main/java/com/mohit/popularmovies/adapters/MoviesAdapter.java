@@ -9,6 +9,7 @@ import android.widget.ImageView;
 
 import com.mohit.popularmovies.R;
 import com.mohit.popularmovies.beans.MovieItem;
+import com.mohit.popularmovies.utils.PopConstants;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
 public class MoviesAdapter extends ArrayAdapter<MovieItem> {
     private Context mContext;
     private List<MovieItem> moviesList;
+    private final String LOG_TAG = ArrayAdapter.class.getSimpleName();
 
     public MoviesAdapter(Context context, List<MovieItem> movieItemList) {
         super(context, 0, movieItemList);
@@ -63,7 +65,11 @@ public class MoviesAdapter extends ArrayAdapter<MovieItem> {
         }
 
         MovieItem item = moviesList.get(position);
-        Picasso.with(mContext).load("http://image.tmdb.org/t/p/w185" + item.getPosterPath()).into(holder.imageView);
+        if (!item.getPosterPath().equalsIgnoreCase("null")) {
+            Picasso.with(mContext).load(PopConstants.BASE_IMAGE_URL + item.getPosterPath()).into(holder.imageView);
+        }else{
+            Picasso.with(mContext).load(R.drawable.not_availaible).into(holder.imageView);
+        }
         return row;
     }
 }

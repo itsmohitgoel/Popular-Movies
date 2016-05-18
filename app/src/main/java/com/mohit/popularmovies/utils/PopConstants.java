@@ -25,5 +25,6 @@ public class PopConstants {
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
 
     //Movie intent key
-    public static final String MOVIE = "movie";
+    public static final String MOVIE_KEY = "movie";
+    public static final String MOVIES_KEY = "movies";
 }

@@ -11,6 +11,12 @@ import java.util.List;
  */
 public interface IAsyncListener {
     /**
+     * Called on Activities/Fragments to communicate
+     * with AsyncTask, and update the UI accordingly
+     */
+    public abstract void onAsyncBegin();
+
+    /**
      * Called mostly on Fragment object, to update its
      * UI, When Async Finish executing.
      * @param movieList

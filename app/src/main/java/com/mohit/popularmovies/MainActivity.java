@@ -1,7 +1,10 @@
 package com.mohit.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -39,5 +42,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        //Get Preference value for Activity
+        SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        String sortOrder = mPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
+
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null) {
+            if (sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_popularity_value))) {
+                actionBar.setTitle(String.format("%s Movies",getString(R.string.pref_sort_by_popularity_label)));
+            }else {
+                actionBar.setTitle(String.format("%s Movies",getString(R.string.pref_sort_by_rating_label)));
+            }
+        }
     }
 }
