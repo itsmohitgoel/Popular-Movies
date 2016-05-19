@@ -9,7 +9,7 @@ public class PopConstants {
     public static final String API_KEY = "ADD Your API KEY HERE";
 
     // API Query URLs with parameters
-    public static final String BASE_URL = "http://api.themoviedb.org/3/discover/movie?";
+    public static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
     public static final String SORT_PARAM = "sort_by";
 
     // JSON keys
