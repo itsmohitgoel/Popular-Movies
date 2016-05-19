@@ -56,8 +56,8 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
             //Make url and open connection
             Uri baseURI = Uri.parse(PopConstants.BASE_URL);
             Uri.Builder builder = baseURI.buildUpon()
-                    .appendQueryParameter(PopConstants.API_KEY_PARAM, PopConstants.API_KEY)
-                    .appendQueryParameter(PopConstants.SORT_PARAM, params[0]);
+                    .appendPath(params[0])
+                    .appendQueryParameter(PopConstants.API_KEY_PARAM, PopConstants.API_KEY);
             Uri finalUri = builder.build();
 
             URL url = new URL(finalUri.toString());
