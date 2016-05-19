@@ -24,11 +24,22 @@
         <activity
             android:name=".SettingsActivity"
             android:label="@string/title_activity_setteings"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mohit.popularmovies.MainActivity"/>
+            </activity>
+
         <activity
             android:name=".MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mohit.popularmovies.MainActivity"/>
+        </activity>
     </application>
 
 </manifest>

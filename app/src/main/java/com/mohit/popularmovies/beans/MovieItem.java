@@ -45,6 +45,7 @@ public class MovieItem implements Parcelable {
     public void setSummary(String mSummary) { this.mSummary = mSummary; }
 
     public void setReleaseDate(String mReleaseDate) {
+        //Show sample data if API has no info.
         if (mReleaseDate.equals("") || mTitle == null){
             this.mReleaseDate = "N/A";
             return;

@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-/** Adapter to bind images to the gridview
+/** Custome Adapter to bind images to the gridview
  * Created by Mohit on 15-05-2016.
  */
 public class MoviesAdapter extends ArrayAdapter<MovieItem> {
@@ -54,20 +54,20 @@ public class MoviesAdapter extends ArrayAdapter<MovieItem> {
         View row = convertView;
         ViewHolder holder;
 
-        if (row == null) {  //First time, inflate
+        if (row == null) {  //First time, inflate the container view
             LayoutInflater inflater = LayoutInflater.from(mContext);
             row = inflater.inflate(R.layout.grid_item_movie, parent, false);
             holder = new ViewHolder();
             holder.imageView = (ImageView) row.findViewById(R.id.grid_item_movie_imageView);
             row.setTag(holder);
-        }else{  //second time, re-utilize
+        }else{  //second time, re-utilize the recycler view
             holder = (ViewHolder) row.getTag();
         }
 
         MovieItem item = moviesList.get(position);
         if (!item.getPosterPath().equalsIgnoreCase("null")) {
             Picasso.with(mContext).load(PopConstants.BASE_IMAGE_URL + item.getPosterPath()).into(holder.imageView);
-        }else{
+        }else{ // If API returns null for the poster image, display sample image.
             Picasso.with(mContext).load(R.drawable.not_availaible).into(holder.imageView);
         }
         return row;

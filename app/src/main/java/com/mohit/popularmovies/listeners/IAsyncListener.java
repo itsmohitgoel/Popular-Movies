@@ -12,7 +12,8 @@ import java.util.List;
 public interface IAsyncListener {
     /**
      * Called on Activities/Fragments to communicate
-     * with AsyncTask, and update the UI accordingly
+     * with AsyncTask, and update its UI, before
+     * execution begins
      */
     public abstract void onAsyncBegin();
 

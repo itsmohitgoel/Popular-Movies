@@ -67,6 +67,9 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
         return rootView;
     }
 
+    /** Download Movies via AsyncTask, after checking the
+     * n/w status, and getting user defined sort order settings
+     */
     private void updateMoviesData() {
         if (PopUtility.isNetworkConnected(getActivity())) {
             FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this);

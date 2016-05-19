@@ -48,6 +48,7 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
         HttpURLConnection urlConnection = null;
         BufferedReader reader = null;
 
+        //Throw exception on missing api key
         if (PopConstants.API_KEY.equals("ADD Your API KEY HERE")) {
             throw new IllegalArgumentException("Please Enter your api key in PopConstants Class !");
         }
