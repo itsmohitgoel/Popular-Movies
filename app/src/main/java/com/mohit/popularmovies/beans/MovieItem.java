@@ -44,7 +44,12 @@ public class MovieItem implements Parcelable {
 
     public void setSummary(String mSummary) { this.mSummary = mSummary; }
 
-    public void setReleaseDate(String mReleaseDate) { this.mReleaseDate = mReleaseDate; }
+    public void setReleaseDate(String mReleaseDate) {
+        if (mReleaseDate.equals("") || mTitle == null){
+            this.mReleaseDate = "N/A";
+            return;
+        }
+        this.mReleaseDate = mReleaseDate; }
 
     public void setRating(String mRating) { this.mRating = mRating; }
 

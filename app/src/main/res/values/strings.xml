@@ -13,5 +13,6 @@
     <string name="pref_sort_by_rating_label">Highest Rated</string>
     <string name="pref_sort_by_popularity_value">popularity.desc</string>
     <string name="pref_sort_by_rating_value">vote_average.desc</string>
+
 </resources>
 

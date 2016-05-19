@@ -11,6 +11,6 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:stretchMode="columnWidth"
-        android:numColumns="2" />
+        android:numColumns= "@integer/num_of_columns"/>
 
 </FrameLayout>

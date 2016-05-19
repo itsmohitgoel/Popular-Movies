@@ -35,7 +35,6 @@
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
             android:src="@drawable/not_availaible"
             android:layout_weight="1"
-            android:padding="5dp"
             android:scaleType="centerCrop" />
 
         <LinearLayout
