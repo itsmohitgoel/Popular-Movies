@@ -38,19 +38,20 @@ public class TestDb extends AndroidTestCase {
         assertEquals(true, db.isOpen());
 
         // have we created  the database we want?
-        Cursor c = db.rawQuery("SELECT name from sqlite_master where type='table'", null);
-        assertTrue("Error: This means that database has not been created correctly", c.moveToFirst());
+        Cursor dbCursor = db.rawQuery("SELECT name from sqlite_master where type='table'", null);
+        assertTrue("Error: This means that database has not been created correctly", dbCursor.moveToFirst());
 
         // verify that the tables have been created
         do {
-            tableNameHashSet.remove(c.getString(0));
-        } while (c.moveToNext());
+            tableNameHashSet.remove(dbCursor.getString(0));
+        } while (dbCursor.moveToNext());
 
         assertTrue("Error: Database was created without movie entry table", tableNameHashSet.isEmpty());
 
         // Now, do my tables contain correct columns?
-        c = db.rawQuery("PRAGMA table_info(" + MovieContract.MovieEntry.TABLE_NAME + " )", null);
-        assertTrue("Error: This means we were unable to query the database for table information", c.moveToFirst());
+        Cursor movieCursor = db.rawQuery("PRAGMA table_info(" + MovieContract.MovieEntry.TABLE_NAME + " )", null);
+        assertTrue("Error: This means we were unable to query the database for table information", movieCursor.moveToFirst());
+
 
         // Build a HashSet of all the column names we want to look for
         final HashSet<String> movieColumnHashSet = new HashSet<>();
@@ -62,15 +63,36 @@ public class TestDb extends AndroidTestCase {
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH);
 
-        int columnNameIndex = c.getColumnIndex("name");
+        int columnNameIndex = movieCursor.getColumnIndex("name");
         do {
-            String columnName = c.getString(columnNameIndex);
+            String columnName = movieCursor.getString(columnNameIndex);
             movieColumnHashSet.remove(columnName);
-        } while (c.moveToNext());
+        } while (movieCursor.moveToNext());
 
         //If this fails that means my database doesn't contain all of the required Movie Entrly
         // columns
         assertTrue("Error: The database doesn't contain all of the required movie entry columns", movieColumnHashSet.isEmpty());
+
+
+        Cursor trailerCursor = db.rawQuery("PRAGMA table_info(" + MovieContract.TrailerEntry.TABLE_NAME + " )", null);
+        assertTrue("Error: This means we were unable to query the database for trailer table information", trailerCursor.moveToFirst());
+
+        final HashSet<String> trailerColumnHashSet = new HashSet<>();
+        trailerColumnHashSet.add(MovieContract.TrailerEntry._ID);
+        trailerColumnHashSet.add(MovieContract.TrailerEntry.COLUMN_MOVIE_ID);
+        trailerColumnHashSet.add(MovieContract.TrailerEntry.COLUMN_NAME);
+        trailerColumnHashSet.add(MovieContract.TrailerEntry.COLUMN_SITE);
+        trailerColumnHashSet.add(MovieContract.TrailerEntry.COLUMN_TRAILER_KEY);
+        trailerColumnHashSet.add(MovieContract.TrailerEntry.COLUMN_SIZE);
+        trailerColumnHashSet.add(MovieContract.TrailerEntry.COLUMN_TYPE);
+
+        int trailerColumnNameIndex = trailerCursor.getColumnIndex("name");
+        do {
+            String trailerColumnName = trailerCursor.getString(trailerColumnNameIndex);
+            trailerColumnHashSet.remove(trailerColumnName);
+        } while (trailerCursor.moveToNext());
+
+        assertTrue("Error: The database doesn't contain all of the required trailer entry columns", trailerColumnHashSet.isEmpty());
         db.close();
     }
 }
