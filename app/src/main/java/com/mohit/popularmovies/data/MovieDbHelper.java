@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.mohit.popularmovies.data.MovieContract.MovieEntry;
+import com.mohit.popularmovies.data.MovieContract.TrailerEntry;
 
 /**
  * Manages a local database for movie data
@@ -31,10 +32,35 @@ public class MovieDbHelper extends SQLiteOpenHelper {
                 MovieEntry.COLUMN_BACKDROP_PATH + " TEXT NOT NULL " +
                 " );";
         db.execSQL(SQL_CREATE_MOVIE_TABLE);
+
+        final String SQL_CREATE_TRAILER_TABLE = "CREATE TABLE " + TrailerEntry.TABLE_NAME + " (" +
+                TrailerEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TrailerEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL, " +
+                TrailerEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                TrailerEntry.COLUMN_SITE + " TEXT NOT NULL, " +
+                TrailerEntry.COLUMN_TRAILER_KEY + " TEXT NOT NULL, " +
+                TrailerEntry.COLUMN_SIZE + " INT NOT NULL, " +
+                TrailerEntry.COLUMN_TYPE + " TEXT NOT NULL, " +
+
+                //Set up the movie_id olumn as foreign key to movie table
+                " FOREIGN KEY (" + TrailerEntry.COLUMN_MOVIE_ID + ") REFERENCES " +
+                MovieEntry.TABLE_NAME + " (" + MovieEntry._ID + "), " +
+
+                // To assure the application have just one trailer per movie,
+                // it's created  a UNIQUE constraint with REPLACE Strategy
+                " UNIQUE (" + TrailerEntry._ID + ", " +
+                TrailerEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE" +
+                " );";
+        db.execSQL(SQL_CREATE_TRAILER_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Update policy is drop already existing tables
+        db.execSQL("DROP TABLE IF EXISTS " + MovieEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + TrailerEntry.TABLE_NAME);
 
+        //Now recreate fresh empty database
+        onCreate(db);
     }
 }
