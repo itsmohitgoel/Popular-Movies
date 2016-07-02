@@ -1,9 +1,11 @@
 package com.mohit.popularmovies.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
+import com.mohit.popularmovies.data.MovieContract.MovieEntry;
 import java.util.HashSet;
 
 /**
@@ -93,6 +95,30 @@ public class TestDb extends AndroidTestCase {
         } while (trailerCursor.moveToNext());
 
         assertTrue("Error: The database doesn't contain all of the required trailer entry columns", trailerColumnHashSet.isEmpty());
+        db.close();
+    }
+
+    /*
+        Test by inserting and quering the movie table.
+     */
+    public void testMovieTable(){
+        MovieDbHelper dbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues testValues = TestUtilities.createMovieValues();
+        long movieRowId = TestUtilities.insertBackInTheDayMovieValues(mContext);
+
+        Cursor movieCursor = db.query(MovieEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null, null,
+                null);
+
+        assertTrue("Error: No records returned from the movie table", movieCursor.moveToFirst());
+        TestUtilities.validateCurrentRecord(movieCursor, testValues);
+        assertFalse("Error: More than one record returned from the movie query", movieCursor.moveToNext());
+
+        movieCursor.close();
         db.close();
     }
 }

@@ -1,10 +1,16 @@
 package com.mohit.popularmovies.data;
 
 import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
 import com.mohit.popularmovies.data.MovieContract.MovieEntry;
 import com.mohit.popularmovies.data.MovieContract.TrailerEntry;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Provides methods and some test data to make it easier to test our database and
@@ -12,6 +18,19 @@ import com.mohit.popularmovies.data.MovieContract.TrailerEntry;
  * Created by Mohit on 29-06-2016.
  */
 public class TestUtilities extends AndroidTestCase {
+
+    static void validateCurrentRecord(Cursor valueCursor, ContentValues expectedValues) {
+        Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
+
+        for (Map.Entry<String, Object> entry : valueSet) {
+            String columnName = entry.getKey();
+            int idx = valueCursor.getColumnIndex(columnName);
+            assertFalse("Error: Column " + columnName + " not found. ", idx == -1);
+            String expectedValue = entry.getValue().toString();
+            assertEquals("Error: Value " + valueCursor.getString(idx) +
+                    " did not match the expected Value " + expectedValue, expectedValue, valueCursor.getString(idx));
+        }
+    }
 
     static ContentValues createMovieValues() {
         ContentValues movieValues = new ContentValues();
@@ -39,4 +58,18 @@ public class TestUtilities extends AndroidTestCase {
         return trailerValues;
     }
 
+    static long insertBackInTheDayMovieValues(Context context) {
+        //insert our test records into the database
+        MovieDbHelper dbHelper = new MovieDbHelper(context);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues testValues = TestUtilities.createMovieValues();
+
+        long movieRowId;
+        movieRowId = db.insert(MovieEntry.TABLE_NAME, null, testValues);
+
+        //verify we got a row back.
+        assertTrue("Error: Failure to insert Back In the Day Movie values", movieRowId != -1);
+
+        return  movieRowId;
+    }
 }
