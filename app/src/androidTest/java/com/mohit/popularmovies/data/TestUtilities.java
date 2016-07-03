@@ -46,7 +46,7 @@ public class TestUtilities extends AndroidTestCase {
         return movieValues;
     }
 
-    static ContentValues createTrailerValues(int movieRowId) {
+    static ContentValues createTrailerValues(long movieRowId) {
         ContentValues trailerValues = new ContentValues();
         trailerValues.put(TrailerEntry.COLUMN_MOVIE_ID, movieRowId);
         trailerValues.put(TrailerEntry.COLUMN_NAME, "Trailer 1");

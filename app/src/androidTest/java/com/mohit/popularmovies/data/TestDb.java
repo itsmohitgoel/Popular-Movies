@@ -6,6 +6,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 
 import com.mohit.popularmovies.data.MovieContract.MovieEntry;
+
+import junit.framework.Test;
+
 import java.util.HashSet;
 
 /**
@@ -102,6 +105,10 @@ public class TestDb extends AndroidTestCase {
         Test by inserting and quering the movie table.
      */
     public void testMovieTable(){
+        insertMovieData();
+    }
+
+    private long insertMovieData() {
         MovieDbHelper dbHelper = new MovieDbHelper(mContext);
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues testValues = TestUtilities.createMovieValues();
@@ -120,5 +127,44 @@ public class TestDb extends AndroidTestCase {
 
         movieCursor.close();
         db.close();
+        return movieRowId;
+    }
+
+    /* Test by inserting and quering the trailer table */
+    public void testTrailerTable() {
+        //First insert the movie, and then use the movieRowId to insert the trailer.
+
+        //First step: get reference to writable database;
+        //Create content values of what I want to insert
+        //Insert content into database table and get row id back
+        //query the database and receive cursor back
+        //move the cursor to a valid database row.
+        // Validate data in resulting cursor against the original contentvalues
+        // Finally close the database
+
+        long movieRowId = insertMovieData();
+
+        MovieDbHelper dbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues testValues = TestUtilities.createTrailerValues(movieRowId);
+
+        long trailerRowId = db.insert(MovieContract.TrailerEntry.TABLE_NAME, null, testValues);
+        assertFalse("Error: Trailer not inserted Correctly", trailerRowId == -1);
+
+        Cursor trailerCursor = db.query(MovieContract.TrailerEntry.TABLE_NAME,
+                null,
+                null,
+                null,
+                null, null,
+                null);
+        assertTrue("Error: No records returned from the table trailer", trailerCursor.moveToFirst());
+
+        TestUtilities.validateCurrentRecord(trailerCursor, testValues);
+
+        assertFalse("Error: More than one record from the trailer table", trailerCursor.moveToNext());
+
+        trailerCursor.close();
+        db.close();
+        dbHelper.close();
     }
 }
