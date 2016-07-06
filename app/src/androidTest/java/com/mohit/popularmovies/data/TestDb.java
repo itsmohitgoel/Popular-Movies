@@ -7,8 +7,6 @@ import android.test.AndroidTestCase;
 
 import com.mohit.popularmovies.data.MovieContract.MovieEntry;
 
-import junit.framework.Test;
-
 import java.util.HashSet;
 
 /**
@@ -67,6 +65,7 @@ public class TestDb extends AndroidTestCase {
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
         movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_BACKDROP_PATH);
+        movieColumnHashSet.add(MovieContract.MovieEntry.COLUMN_POPULARITY);
 
         int columnNameIndex = movieCursor.getColumnIndex("name");
         do {
@@ -132,16 +131,6 @@ public class TestDb extends AndroidTestCase {
 
     /* Test by inserting and quering the trailer table */
     public void testTrailerTable() {
-        //First insert the movie, and then use the movieRowId to insert the trailer.
-
-        //First step: get reference to writable database;
-        //Create content values of what I want to insert
-        //Insert content into database table and get row id back
-        //query the database and receive cursor back
-        //move the cursor to a valid database row.
-        // Validate data in resulting cursor against the original contentvalues
-        // Finally close the database
-
         long movieRowId = insertMovieData();
 
         MovieDbHelper dbHelper = new MovieDbHelper(mContext);

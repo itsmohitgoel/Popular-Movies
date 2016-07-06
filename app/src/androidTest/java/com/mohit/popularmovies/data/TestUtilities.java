@@ -42,6 +42,7 @@ public class TestUtilities extends AndroidTestCase {
         movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE, 3.49);
         movieValues.put(MovieEntry.COLUMN_POSTER_PATH, "/is6QqgiPQlI3Wmk0bovqUFKM56B.jpg");
         movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH, "/yySmUG29VgDdCROb9eer9L2kkKX.jpg");
+        movieValues.put(MovieEntry.COLUMN_POPULARITY, 25.033);
 
         return movieValues;
     }
