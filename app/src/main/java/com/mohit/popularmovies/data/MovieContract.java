@@ -15,6 +15,7 @@ public class MovieContract {
     public static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
 
     public static final String PATH_MOVIE = MovieEntry.TABLE_NAME;
+    public static final String PATH_MOVIE_ID = MovieEntry.TABLE_NAME + "/#";
     public static final String PATH_TRAILER = TrailerEntry.TABLE_NAME;
 
     /* Inner class that defines the table contents  of the movie table*/
@@ -63,8 +64,12 @@ public class MovieContract {
         public static final String COLUMN_SIZE = "size";
         public static final String COLUMN_TYPE = "type";
 
-        public static Uri buildTrailerUri(long id) {
+        public static Uri buildTrailerUriWithMovieId(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static long getMovieIdFromTrailerUri(Uri uri) {
+            return Long.valueOf(uri.getQueryParameter(COLUMN_MOVIE_ID));
         }
     }
 }
