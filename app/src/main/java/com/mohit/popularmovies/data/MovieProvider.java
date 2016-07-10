@@ -53,6 +53,7 @@ public class MovieProvider extends ContentProvider{
 
     @Override
     public boolean onCreate() {
+        mMovieDbHelper = new MovieDbHelper(getContext());
         return false;
     }
 
@@ -65,7 +66,16 @@ public class MovieProvider extends ContentProvider{
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+        final int match = mUriMatcher.match(uri);
+
+        switch (match) {
+            case MOVIE:
+                return MovieContract.MovieEntry.CONTENT_TYPE;
+            case TRAILER:
+                return MovieContract.TrailerEntry.CONTENT_TYPE;
+            default:
+                throw new UnsupportedOperationException("Unknown uri : " + uri);
+        }
     }
 
     @Nullable
