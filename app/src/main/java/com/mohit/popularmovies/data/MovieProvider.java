@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
@@ -60,7 +61,44 @@ public class MovieProvider extends ContentProvider{
     @Nullable
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
-        return null;
+        int match = mUriMatcher.match(uri);
+        SQLiteDatabase db  = mMovieDbHelper.getReadableDatabase();
+        Cursor cursor = null;
+        switch (match) {
+            case MOVIE:
+                cursor = mMovieQueryBuilder.query(db,
+                        projection,
+                        null,
+                        null,
+                        null, null,
+                        sortOrder
+                );
+                break;
+            case MOVIE_WITH_ID:
+                mMovieQueryBuilder.appendWhere(
+                        MovieContract.MovieEntry._ID + " = " + uri.getPathSegments().get(1));
+                cursor = mMovieQueryBuilder.query(db,
+                        projection,
+                        null,
+                        null,
+                        null, null,
+                        sortOrder);
+                break;
+            case TRAILER:
+                long movieID = MovieContract.TrailerEntry.getMovieIdFromTrailerUri(uri);
+                String trailerSelection = MovieContract.TrailerEntry.TABLE_NAME + "." + MovieContract.TrailerEntry.COLUMN_MOVIE_ID + " = ?";
+                cursor = mMovieAndTrailerQueryBuilder.query(db,
+                        projection,
+                        trailerSelection,
+                        new String[]{Long.toString(movieID)},
+                        null, null,
+                        sortOrder);
+                break;
+            default:
+                throw new UnsupportedOperationException("unknown uri in query() method: " + uri);
+        }
+        cursor.setNotificationUri(getContext().getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
