@@ -101,7 +101,6 @@ public class MovieProvider extends ContentProvider{
         return cursor;
     }
 
-    @Nullable
     @Override
     public String getType(Uri uri) {
         final int match = mUriMatcher.match(uri);
@@ -109,7 +108,11 @@ public class MovieProvider extends ContentProvider{
         switch (match) {
             case MOVIE:
                 return MovieContract.MovieEntry.CONTENT_TYPE;
+            case MOVIE_WITH_ID:
+                return MovieContract.MovieEntry.CONTENT_ITEM_TYPE;
             case TRAILER:
+                return MovieContract.TrailerEntry.CONTENT_TYPE;
+            case TRAILER_WITH_MOVIE:
                 return MovieContract.TrailerEntry.CONTENT_TYPE;
             default:
                 throw new UnsupportedOperationException("Unknown uri : " + uri);
