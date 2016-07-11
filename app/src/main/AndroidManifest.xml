@@ -40,6 +40,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.mohit.popularmovies.MainActivity"/>
         </activity>
+
+        <provider
+            android:authorities="com.mohit.popularmovies.app"
+            android:name=".data.MovieProvider" />
     </application>
 
 </manifest>
