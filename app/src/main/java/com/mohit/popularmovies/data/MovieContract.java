@@ -69,7 +69,7 @@ public class MovieContract {
         }
 
         public static long getMovieIdFromTrailerUri(Uri uri) {
-            return Long.valueOf(uri.getQueryParameter(COLUMN_MOVIE_ID));
+            return Long.valueOf(uri.getLastPathSegment());
         }
     }
 }

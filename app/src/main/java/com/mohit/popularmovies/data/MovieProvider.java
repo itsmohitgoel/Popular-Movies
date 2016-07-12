@@ -12,7 +12,7 @@ import android.support.annotation.Nullable;
 /**
  * Created by Mohit on 05-07-2016.
  */
-public class MovieProvider extends ContentProvider{
+public class MovieProvider extends ContentProvider {
 
     private static final UriMatcher mUriMatcher = buildUriMatcher();
     private MovieDbHelper mMovieDbHelper;
@@ -24,6 +24,7 @@ public class MovieProvider extends ContentProvider{
 
     private static final SQLiteQueryBuilder mMovieQueryBuilder;
     private static final SQLiteQueryBuilder mMovieAndTrailerQueryBuilder;
+
     static {
         mMovieQueryBuilder = new SQLiteQueryBuilder();
 
@@ -36,18 +37,17 @@ public class MovieProvider extends ContentProvider{
         mMovieAndTrailerQueryBuilder = new SQLiteQueryBuilder();
         mMovieAndTrailerQueryBuilder.setTables(
                 MovieContract.TrailerEntry.TABLE_NAME + " INNER JOIN " + MovieContract.MovieEntry.TABLE_NAME +
-                 " ON " + MovieContract.TrailerEntry.TABLE_NAME + "." + MovieContract.TrailerEntry.COLUMN_MOVIE_ID +
-                 " = " + MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID);
-
+                        " ON " + MovieContract.TrailerEntry.TABLE_NAME + "." + MovieContract.TrailerEntry.COLUMN_MOVIE_ID +
+                        " = " + MovieContract.MovieEntry.TABLE_NAME + "." + MovieContract.MovieEntry._ID);
     }
 
     public static UriMatcher buildUriMatcher() {
         final UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
-        matcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIE, MOVIE );
+        matcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIE, MOVIE);
         matcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_MOVIE_ID, MOVIE_WITH_ID);
-        matcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_TRAILER, TRAILER );
-        matcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_TRAILER + "/#", TRAILER_WITH_MOVIE );
+        matcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_TRAILER, TRAILER);
+        matcher.addURI(MovieContract.CONTENT_AUTHORITY, MovieContract.PATH_TRAILER + "/#", TRAILER_WITH_MOVIE);
 
         return matcher;
     }
@@ -62,7 +62,7 @@ public class MovieProvider extends ContentProvider{
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
         int match = mUriMatcher.match(uri);
-        SQLiteDatabase db  = mMovieDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mMovieDbHelper.getReadableDatabase();
         Cursor cursor = null;
         switch (match) {
             case MOVIE:
@@ -85,6 +85,9 @@ public class MovieProvider extends ContentProvider{
                         sortOrder);
                 break;
             case TRAILER:
+                cursor = db.query(MovieContract.TrailerEntry.TABLE_NAME, projection, null, null, null, null, null, sortOrder);
+                break;
+            case TRAILER_WITH_MOVIE:
                 long movieID = MovieContract.TrailerEntry.getMovieIdFromTrailerUri(uri);
                 String trailerSelection = MovieContract.TrailerEntry.TABLE_NAME + "." + MovieContract.TrailerEntry.COLUMN_MOVIE_ID + " = ?";
                 cursor = mMovieAndTrailerQueryBuilder.query(db,

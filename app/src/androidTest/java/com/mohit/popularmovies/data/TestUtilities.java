@@ -19,6 +19,12 @@ import java.util.Set;
  */
 public class TestUtilities extends AndroidTestCase {
 
+    static void validateCursor(String error, Cursor valueCursor, ContentValues expectedValues) {
+        assertTrue("Error: Empty Cursor returned in " + error, valueCursor.moveToFirst());
+        validateCurrentRecord(valueCursor, expectedValues);
+        assertFalse("Error: Resultset contains more than one record", valueCursor.moveToNext());
+        valueCursor.close();
+    }
     static void validateCurrentRecord(Cursor valueCursor, ContentValues expectedValues) {
         Set<Map.Entry<String, Object>> valueSet = expectedValues.valueSet();
 
@@ -47,6 +53,23 @@ public class TestUtilities extends AndroidTestCase {
         return movieValues;
     }
 
+    static ContentValues createMovieWithMultipleTrailersValues() {
+        ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieEntry.COLUMN_ORIGINAL_TITLE, "Batman v Superman: Dawn of Justice");
+        movieValues.put(MovieEntry.COLUMN_OVERVIEW, "Fearing the actions of a god-like Super Hero left unchecked, " +
+                "Gotham City’s own formidable, forceful vigilante takes on Metropolis’s most revered, " +
+                "modern-day savior, while the world wrestles with what sort of hero it really needs. " +
+                "And with Batman and Superman at war with one another, a new threat quickly arises," +
+                " putting mankind in greater danger than it’s ever known before.");
+        movieValues.put(MovieEntry.COLUMN_RELEASE_DATE, "2016-03-23");
+        movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE, 5.62);
+        movieValues.put(MovieEntry.COLUMN_POSTER_PATH, "/cGOPbv9wA5gEejkUN892JrveARt.jpg");
+        movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH, "/vsjBeMPZtyB7yNsYY56XYxifaQZ.jpg");
+        movieValues.put(MovieEntry.COLUMN_POPULARITY, 54.565);
+
+        return movieValues;
+    }
+
     static ContentValues createTrailerValues(long movieRowId) {
         ContentValues trailerValues = new ContentValues();
         trailerValues.put(TrailerEntry.COLUMN_MOVIE_ID, movieRowId);
@@ -57,6 +80,34 @@ public class TestUtilities extends AndroidTestCase {
         trailerValues.put(TrailerEntry.COLUMN_TYPE, "Trailer");
 
         return trailerValues;
+    }
+
+    static ContentValues createTrailerValues(long movieRowId, String name, String site, String trailerKey, int size, String type) {
+        ContentValues trailerValues = new ContentValues();
+        trailerValues.put(TrailerEntry.COLUMN_MOVIE_ID, movieRowId);
+        trailerValues.put(TrailerEntry.COLUMN_NAME, name);
+        trailerValues.put(TrailerEntry.COLUMN_SITE, site);
+        trailerValues.put(TrailerEntry.COLUMN_TRAILER_KEY, trailerKey);
+        trailerValues.put(TrailerEntry.COLUMN_SIZE, size);
+        trailerValues.put(TrailerEntry.COLUMN_TYPE, type);
+
+        return trailerValues;
+    }
+
+    /*
+        This will create multiple entries in trailers table for single movie,
+        having differnet trailers
+     */
+    static ContentValues[] createMultipleTrailerValues(long movieRowId) {
+        ContentValues trailer1 = createTrailerValues(movieRowId, "Exclusive Sneak", "YouTube", "6as8ahAr1Uc", 1080, "Teaser");
+        ContentValues trailer2 = createTrailerValues(movieRowId, "Official Trailer 2", "YouTube", "fis-9Zqu2Ro", 1080, "Trailer");
+        ContentValues trailer3 = createTrailerValues(movieRowId, "Official Final Trailer", "YouTube", "NhWg7AQLI_8", 1080, "Trailer");
+        ContentValues trailer4 = createTrailerValues(movieRowId, "Official Teaser Trailer", "YouTube", "IwfUnkBfdZ4", 1080, "Trailer");
+        ContentValues trailer5 = createTrailerValues(movieRowId, "TV Spot 1", "YouTube", "IwfUnkBfdZ4", 1080, "Teaser");
+        ContentValues trailer6 = createTrailerValues(movieRowId, "Official Comic-Con Trailer", "YouTube", "0WWzgGyAH6Y", 1080, "Trailer");
+
+        ContentValues[] contentValuesArray = new ContentValues[]{trailer1, trailer2, trailer3, trailer4, trailer5, trailer6};
+        return contentValuesArray;
     }
 
     static long insertBackInTheDayMovieValues(Context context) {
