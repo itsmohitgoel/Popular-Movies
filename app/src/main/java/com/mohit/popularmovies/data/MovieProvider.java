@@ -4,6 +4,7 @@ import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.UriMatcher;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -122,10 +123,40 @@ public class MovieProvider extends ContentProvider {
         }
     }
 
-    @Nullable
     @Override
     public Uri insert(Uri uri, ContentValues values) {
-        return null;
+        SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+        final int match = mUriMatcher.match(uri);
+
+        Uri returnUri = null;
+        long _id = 0;
+        switch (match) {
+            case MOVIE:
+                _id = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+
+                if (_id > 0) {
+                    //Inserted correctly
+                    returnUri = MovieContract.MovieEntry.buildMovieUri(_id);
+                } else {
+                    throw new SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            case TRAILER:
+                _id = db.insert(MovieContract.TrailerEntry.TABLE_NAME, null, values);
+
+                if (_id > 0) {
+                    returnUri = MovieContract.TrailerEntry.buildTrailerUriWithMovieId(_id);
+                }else {
+                    throw new SQLException("Failed to insert row into " + uri);
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri: " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(returnUri, null);
+        db.close();
+        return returnUri;
     }
 
     @Override

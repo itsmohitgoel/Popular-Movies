@@ -1,11 +1,13 @@
 package com.mohit.popularmovies.data;
 
 import android.content.ComponentName;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.pm.PackageManager;
 import android.content.pm.ProviderInfo;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Build;
 import android.test.AndroidTestCase;
 
@@ -145,4 +147,59 @@ public class TestMovieProvider extends AndroidTestCase {
         trailerCursor.close();
     }
 
+    public void testInsert() {
+        ContentValues testMovieValues = TestUtilities.createMovieValues();
+
+        TestUtilities.TestContentObserver tco = TestUtilities.TestContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, tco);
+        Uri movieUri = mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, testMovieValues);
+
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        long movieRowId = ContentUris.parseId(movieUri);
+
+        assertTrue("Error: movie insertion failed in movie table", movieRowId != -1);
+
+        Cursor cursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        TestUtilities.validateCursor(" testInsert(). Error validating MovieEntry insert.", cursor, testMovieValues);
+
+
+        ContentValues testTrailerValues = TestUtilities.createTrailerValues(movieRowId);
+
+        tco = TestUtilities.TestContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(TrailerEntry.CONTENT_URI, true, tco);
+        Uri trailerInsertUri = mContext.getContentResolver().insert(TrailerEntry.CONTENT_URI, testTrailerValues);
+
+        tco.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(tco);
+
+        long trailerRowId = ContentUris.parseId(trailerInsertUri);
+
+        assertTrue("Error: trailer insertion failed in trailer table", trailerRowId != -1);
+
+        Cursor trailerCursor = mContext.getContentResolver().query(TrailerEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        TestUtilities.validateCursor(" testInsert(). Error validating TrailerEntry insert.", trailerCursor, testTrailerValues);
+
+        testMovieValues.putAll(testTrailerValues);
+        // Get the joined Movie and Trailer data
+        Cursor trailerMovieCursor = mContext.getContentResolver().query(
+                TrailerEntry.buildTrailerUriWithMovieId(movieRowId),
+                null,
+                null,
+                null,
+                null
+        );
+        TestUtilities.validateCursor("testInsert. Error validating the joined trailer and movie data",
+                trailerMovieCursor, testMovieValues);
+    }
 }
