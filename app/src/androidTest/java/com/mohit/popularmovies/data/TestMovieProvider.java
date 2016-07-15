@@ -27,8 +27,38 @@ public class TestMovieProvider extends AndroidTestCase {
         db.close();
     }
 
+    public void deleteAllRecordsFromProvider() {
+        mContext.getContentResolver().delete(
+                TrailerEntry.CONTENT_URI,
+                null,
+                null
+        );
+
+        mContext.getContentResolver().delete(MovieEntry.CONTENT_URI,
+                null,
+                null);
+
+        Cursor movieCursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        assertEquals("Error: Records not deleted from MOVIE table during delete", 0, movieCursor.getCount());
+        movieCursor.close();
+
+        Cursor trailerCursor = mContext.getContentResolver().query(TrailerEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        assertEquals("Error: Records not deleted from trailer table during delete", 0, trailerCursor.getCount());
+        trailerCursor.close();
+
+    }
     public void deleteAllRecords() {
-        deleteAllRecordsFromDB();
+        deleteAllRecordsFromProvider();
     }
 
     @Override
@@ -201,5 +231,25 @@ public class TestMovieProvider extends AndroidTestCase {
         );
         TestUtilities.validateCursor("testInsert. Error validating the joined trailer and movie data",
                 trailerMovieCursor, testMovieValues);
+    }
+
+    public void testDelete() {
+        testInsert();
+
+        // Register a content observer for our movie table
+        TestUtilities.TestContentObserver movieObserver = TestUtilities.TestContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, movieObserver);
+
+        // Register a content observer for our trailer table
+        TestUtilities.TestContentObserver trailerObserver = TestUtilities.TestContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(TrailerEntry.CONTENT_URI, true, trailerObserver);
+
+        deleteAllRecordsFromProvider();
+
+        movieObserver.waitForNotificationOrFail();
+        trailerObserver.waitForNotificationOrFail();
+
+        mContext.getContentResolver().unregisterContentObserver(movieObserver);
+        mContext.getContentResolver().unregisterContentObserver(trailerObserver);
     }
 }

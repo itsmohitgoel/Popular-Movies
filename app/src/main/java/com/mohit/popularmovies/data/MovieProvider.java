@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 
+import com.mohit.popularmovies.data.MovieContract.*;
+
 /**
  * Created by Mohit on 05-07-2016.
  */
@@ -146,7 +148,7 @@ public class MovieProvider extends ContentProvider {
 
                 if (_id > 0) {
                     returnUri = MovieContract.TrailerEntry.buildTrailerUriWithMovieId(_id);
-                }else {
+                } else {
                     throw new SQLException("Failed to insert row into " + uri);
                 }
                 break;
@@ -161,7 +163,31 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+
+        final int match = mUriMatcher.match(uri);
+        int deleteCount = 0;
+
+        if (selection == null) {
+            selection = "1";
+        }
+
+        switch (match) {
+            case MOVIE:
+                deleteCount = db.delete(MovieEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            case TRAILER:
+                deleteCount = db.delete(TrailerEntry.TABLE_NAME, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("unknown uri: " + null);
+        }
+
+        if (deleteCount > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        db.close();
+        return deleteCount;
     }
 
     @Override
