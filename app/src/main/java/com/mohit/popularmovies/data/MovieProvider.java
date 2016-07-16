@@ -71,8 +71,8 @@ public class MovieProvider extends ContentProvider {
             case MOVIE:
                 cursor = mMovieQueryBuilder.query(db,
                         projection,
-                        null,
-                        null,
+                        selection,
+                        selectionArgs,
                         null, null,
                         sortOrder
                 );
@@ -82,13 +82,18 @@ public class MovieProvider extends ContentProvider {
                         MovieContract.MovieEntry._ID + " = " + uri.getPathSegments().get(1));
                 cursor = mMovieQueryBuilder.query(db,
                         projection,
-                        null,
-                        null,
+                        selection,
+                        selectionArgs,
                         null, null,
                         sortOrder);
                 break;
             case TRAILER:
-                cursor = db.query(MovieContract.TrailerEntry.TABLE_NAME, projection, null, null, null, null, null, sortOrder);
+                cursor = db.query(MovieContract.TrailerEntry.TABLE_NAME,
+                        projection,
+                        selection,
+                        selectionArgs,
+                        null, null,
+                        sortOrder);
                 break;
             case TRAILER_WITH_MOVIE:
                 long movieID = MovieContract.TrailerEntry.getMovieIdFromTrailerUri(uri);
@@ -180,7 +185,7 @@ public class MovieProvider extends ContentProvider {
                 deleteCount = db.delete(TrailerEntry.TABLE_NAME, selection, selectionArgs);
                 break;
             default:
-                throw new UnsupportedOperationException("unknown uri: " + null);
+                throw new UnsupportedOperationException("unknown uri: " + uri);
         }
 
         if (deleteCount > 0) {
@@ -192,7 +197,26 @@ public class MovieProvider extends ContentProvider {
 
     @Override
     public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+        SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+        final int match = mUriMatcher.match(uri);
+
+        int updateCount = 0;
+
+        switch (match) {
+            case MOVIE:
+                updateCount = db.update(MovieEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            case TRAILER:
+                updateCount = db.update(TrailerEntry.TABLE_NAME, values, selection, selectionArgs);
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown Uri : " + uri);
+        }
+
+        if (updateCount > 0) {
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+        return updateCount;
     }
 
 }

@@ -57,6 +57,7 @@ public class TestMovieProvider extends AndroidTestCase {
         trailerCursor.close();
 
     }
+
     public void deleteAllRecords() {
         deleteAllRecordsFromProvider();
     }
@@ -252,4 +253,93 @@ public class TestMovieProvider extends AndroidTestCase {
         mContext.getContentResolver().unregisterContentObserver(movieObserver);
         mContext.getContentResolver().unregisterContentObserver(trailerObserver);
     }
+
+    public void testUpdate() {
+        // First Test updation of Movie Table entries
+        ContentValues movieValues = TestUtilities.createMovieValues();
+        Uri movieUri = mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, movieValues);
+
+        long movieRowId = ContentUris.parseId(movieUri);
+
+        assertTrue("Error: zero record inserted in movie table", movieRowId != -1);
+
+        ContentValues movieValuesUpdated = new ContentValues(movieValues);
+        movieValuesUpdated.put(MovieEntry._ID, movieRowId);
+        movieValuesUpdated.put(MovieEntry.COLUMN_ORIGINAL_TITLE, "Updated Title of Back In the Day");
+
+        Cursor movieCursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        TestUtilities.TestContentObserver movieObserver = TestUtilities.TestContentObserver.getTestContentObserver();
+        movieCursor.registerContentObserver(movieObserver);
+
+        int count = mContext.getContentResolver().update(MovieEntry.CONTENT_URI,
+                movieValuesUpdated,
+                MovieEntry._ID + " = ?",
+                new String[]{Long.toString(movieRowId)});
+
+        movieObserver.waitForNotificationOrFail();
+
+        movieCursor.unregisterContentObserver(movieObserver);
+        movieCursor.close();
+
+        Cursor updateCursor = mContext.getContentResolver().query(
+                MovieEntry.CONTENT_URI,
+                null,
+                MovieEntry.COLUMN_ORIGINAL_TITLE + " = ?",
+                new String[]{"Updated Title of Back In the Day"},
+                null
+        );
+
+        TestUtilities.validateCursor("testUpdate. Error validating Movie entry table",
+                updateCursor, movieValuesUpdated);
+
+
+        // Now test updation of entries in trailer table
+        ContentValues trailerValues = TestUtilities.createTrailerValues(movieRowId);
+        Uri trailerUri = mContext.getContentResolver().insert(TrailerEntry.CONTENT_URI, trailerValues);
+
+        long trailerRowId = ContentUris.parseId(trailerUri);
+        assertTrue("Error: zero row inserted in trailer table", trailerRowId != -1);
+
+        ContentValues trailerValuesUpdated = new ContentValues(trailerValues);
+        trailerValuesUpdated.put(TrailerEntry.COLUMN_MOVIE_ID, 1378);
+
+        Cursor trailerCursor = mContext.getContentResolver().query(
+                TrailerEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null
+        );
+
+        TestUtilities.TestContentObserver trailerObserver = TestUtilities.TestContentObserver.getTestContentObserver();
+        trailerCursor.registerContentObserver(trailerObserver);
+
+        int trailerCount = mContext.getContentResolver().update(
+                TrailerEntry.CONTENT_URI,
+                trailerValuesUpdated,
+                TrailerEntry._ID + " = ? ",
+                new String[]{Long.toString(trailerRowId)}
+        );
+
+        trailerObserver.waitForNotificationOrFail();
+
+        trailerCursor.unregisterContentObserver(trailerObserver);
+        trailerCursor.close();
+
+        Cursor trailerCursorUpdated = mContext.getContentResolver().query(
+                TrailerEntry.CONTENT_URI,
+                null,
+                TrailerEntry.COLUMN_MOVIE_ID + " = ? ",
+                new String[]{"1378"},
+                null
+        );
+
+        TestUtilities.validateCursor("testUpdate. Error validating trailer entry table", trailerCursorUpdated, trailerValuesUpdated);
+    }
+
 }
