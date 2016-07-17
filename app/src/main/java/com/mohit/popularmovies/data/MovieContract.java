@@ -29,6 +29,7 @@ public class MovieContract {
 
         public static final String TABLE_NAME = "movie";
 
+        public static final String COLUMN_MOVIE_ID = "movie_id_api";
         public static final String COLUMN_ORIGINAL_TITLE = "original_title";
         public static final String COLUMN_OVERVIEW = "overview";
         public static final String COLUMN_RELEASE_DATE = "release_date";

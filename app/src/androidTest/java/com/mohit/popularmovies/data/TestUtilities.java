@@ -45,6 +45,7 @@ public class TestUtilities extends AndroidTestCase {
 
     static ContentValues createMovieValues() {
         ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieEntry.COLUMN_MOVIE_ID, 368596);
         movieValues.put(MovieEntry.COLUMN_ORIGINAL_TITLE, "Back in the Day");
         movieValues.put(MovieEntry.COLUMN_OVERVIEW, "A young boxer is taken under the wing of a mob" +
                 " boss after his mother dies and his father is run out of town" +
@@ -60,6 +61,7 @@ public class TestUtilities extends AndroidTestCase {
 
     static ContentValues createMovieWithMultipleTrailersValues() {
         ContentValues movieValues = new ContentValues();
+        movieValues.put(MovieEntry.COLUMN_MOVIE_ID, 368596);
         movieValues.put(MovieEntry.COLUMN_ORIGINAL_TITLE, "Batman v Superman: Dawn of Justice");
         movieValues.put(MovieEntry.COLUMN_OVERVIEW, "Fearing the actions of a god-like Super Hero left unchecked, " +
                 "Gotham City’s own formidable, forceful vigilante takes on Metropolis’s most revered, " +
