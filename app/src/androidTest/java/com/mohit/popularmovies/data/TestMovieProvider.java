@@ -342,4 +342,54 @@ public class TestMovieProvider extends AndroidTestCase {
         TestUtilities.validateCursor("testUpdate. Error validating trailer entry table", trailerCursorUpdated, trailerValuesUpdated);
     }
 
+    public void testBulkInsert() {
+        ContentValues testMovieValues = TestUtilities.createMovieValues();
+
+        TestUtilities.TestContentObserver movieObserver = TestUtilities.TestContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(MovieEntry.CONTENT_URI, true, movieObserver);
+        Uri movieUri = mContext.getContentResolver().insert(MovieEntry.CONTENT_URI, testMovieValues);
+
+        movieObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(movieObserver);
+
+        long movieRowId = ContentUris.parseId(movieUri);
+
+        assertTrue("Error: movie insertion failed in movie table", movieRowId != -1);
+
+        Cursor cursor = mContext.getContentResolver().query(MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+
+        TestUtilities.validateCursor(" testInsert(). Error validating MovieEntry insert.", cursor, testMovieValues);
+
+        final int numOfBulkInserts = 6;
+        ContentValues[] bulkInsertValues = TestUtilities.createMultipleTrailerValues(movieRowId);
+
+        TestUtilities.TestContentObserver trailersObserver = TestUtilities.TestContentObserver.getTestContentObserver();
+        mContext.getContentResolver().registerContentObserver(TrailerEntry.CONTENT_URI, true, trailersObserver);
+
+        int insertCount = mContext.getContentResolver().bulkInsert(TrailerEntry.CONTENT_URI, bulkInsertValues);
+
+        trailersObserver.waitForNotificationOrFail();
+        mContext.getContentResolver().unregisterContentObserver(trailersObserver);
+
+        assertEquals("Error: every bulk record not inserted !", numOfBulkInserts, insertCount);
+
+        Cursor trailersCursor = mContext.getContentResolver().query(TrailerEntry.buildTrailerUriWithMovieId(movieRowId),
+                null,
+                null,
+                null,
+                null);
+
+        assertEquals("Error: every bulk record of trailer not inserted !", numOfBulkInserts, trailersCursor.getCount());
+
+        assertTrue("Error : No trailer found in testBulkInsert()", trailersCursor.moveToFirst());
+        for (int i = 0; i < numOfBulkInserts; i++, trailersCursor.moveToNext()) {
+
+            TestUtilities.validateCurrentRecord(trailersCursor, bulkInsertValues[i]);
+        }
+        trailersCursor.close();
+    }
 }

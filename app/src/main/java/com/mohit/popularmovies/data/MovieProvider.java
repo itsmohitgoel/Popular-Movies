@@ -219,4 +219,48 @@ public class MovieProvider extends ContentProvider {
         return updateCount;
     }
 
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mMovieDbHelper.getWritableDatabase();
+        final int match = mUriMatcher.match(uri);
+        int returnCount = 0;
+
+        switch (match) {
+            case MOVIE:
+                db.beginTransaction();
+                try {
+                    for (ContentValues value : values) {
+                        long _id = db.insert(MovieEntry.TABLE_NAME, null, value);
+
+                        if (_id > 0) {
+                            //Inserted correctly
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                }finally {
+                    db.endTransaction();
+                }
+                break;
+            case TRAILER:
+                db.beginTransaction();
+                try{
+                    for (ContentValues value : values) {
+                        long _id = db.insert(TrailerEntry.TABLE_NAME, null, value);
+
+                        if (_id > 0) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                }finally {
+                    db.endTransaction();
+                }
+                break;
+            default:
+                throw new UnsupportedOperationException("Unsupported uri: " + uri);
+        }
+        getContext().getContentResolver().notifyChange(uri, null);
+        return returnCount;
+    }
 }
