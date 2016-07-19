@@ -9,13 +9,14 @@ import android.os.Parcelable;
  */
 public class MovieItem implements Parcelable {
     // member variables
+    private int  mMovieIdApi;
     private String mTitle;
     private String mPosterPath;
     private String mBackdropPath;
     private String mSummary;
     private String mReleaseDate;
     private String mRating;
-
+    private float mPopularity;
 
     //MovieItem Constructor
     public MovieItem() {
@@ -35,7 +36,15 @@ public class MovieItem implements Parcelable {
 
     public String getRating() { return mRating; }
 
+    public int getMovieIdApi() { return mMovieIdApi; }
+
+    public float getPopularity () { return mPopularity; }
+
     // Setters
+
+
+    public void setMovieIdApi(int mMovieIdApi) { this.mMovieIdApi = mMovieIdApi; }
+
     public void setTitle(String mTitle) { this.mTitle = mTitle; }
 
     public void setBackdropPath(String mBackdropPath) { this.mBackdropPath = mBackdropPath; }
@@ -54,6 +63,8 @@ public class MovieItem implements Parcelable {
 
     public void setRating(String mRating) { this.mRating = mRating; }
 
+    public void setPopularity(float mPopularity) { this.mPopularity = mPopularity; }
+
     @Override
     public int describeContents() {
         return 0;
@@ -61,22 +72,26 @@ public class MovieItem implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(mMovieIdApi);
         dest.writeString(mTitle);
         dest.writeString(mPosterPath);
         dest.writeString(mBackdropPath);
         dest.writeString(mSummary);
         dest.writeString(mReleaseDate);
         dest.writeString(mRating);
+        dest.writeFloat(mPopularity);
     }
 
     // Movie constructor used by Parcel
     private MovieItem(Parcel source) {
+        mMovieIdApi = source.readInt();
         mTitle = source.readString();
         mPosterPath = source.readString();
         mBackdropPath = source.readString();
         mSummary = source.readString();
         mReleaseDate = source.readString();
         mRating = source.readString();
+        mPopularity = source.readFloat();
     }
 
         public static final Parcelable.Creator<MovieItem> CREATOR =
