@@ -20,28 +20,28 @@ import java.util.List;
  */
 public class MoviesAdapter extends ArrayAdapter<MovieItem> {
     private Context mContext;
-    private List<MovieItem> moviesList;
+    private List<MovieItem> mMoviesList;
     private final String LOG_TAG = ArrayAdapter.class.getSimpleName();
 
     public MoviesAdapter(Context context, List<MovieItem> movieItemList) {
         super(context, 0, movieItemList);
         this.mContext = context;
-        this.moviesList = movieItemList;
+        this.mMoviesList = movieItemList;
     }
 
     public void setMoviesList(ArrayList<MovieItem> mList) {
-        this.moviesList = mList;
+        this.mMoviesList = mList;
         notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        return moviesList.size();
+        return mMoviesList.size();
     }
 
     @Override
     public MovieItem getItem(int position) {
-        return moviesList.get(position);
+        return mMoviesList.get(position);
     }
 
     //ViewHolder class for smoother scrolling
@@ -64,7 +64,7 @@ public class MoviesAdapter extends ArrayAdapter<MovieItem> {
             holder = (ViewHolder) row.getTag();
         }
 
-        MovieItem item = moviesList.get(position);
+        MovieItem item = mMoviesList.get(position);
         if (!item.getPosterPath().equalsIgnoreCase("null")) {
             Picasso.with(mContext).load(PopConstants.BASE_IMAGE_URL + item.getPosterPath()).into(holder.imageView);
         }else{ // If API returns null for the poster image, display sample image.

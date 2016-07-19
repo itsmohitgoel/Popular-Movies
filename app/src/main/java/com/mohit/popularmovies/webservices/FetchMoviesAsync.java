@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
     private final String LOG_TAG = FetchMoviesAsync.class.getSimpleName();
     public IAsyncListener mListener; //Listener to send data back to activity
-    private ArrayList<MovieItem> moviesList; // To be updated via Jsonparsing
+    private ArrayList<MovieItem> mMoviesList; // To be updated via Jsonparsing
 
     public FetchMoviesAsync(IAsyncListener listener) {
         if (listener == null) {
@@ -106,8 +106,8 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (moviesList != null) {
-            mListener.onAsyncEnd(moviesList);
+        if (mMoviesList != null) {
+            mListener.onAsyncEnd(mMoviesList);
         }
     }
 
@@ -116,7 +116,7 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
             JSONObject jsonObject = new JSONObject(result);
             JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-            moviesList = new ArrayList<>(jsonArray.length());
+            mMoviesList = new ArrayList<>(jsonArray.length());
             MovieItem movie;
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -129,7 +129,7 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
                 movie.setReleaseDate(movieJson.getString(PopConstants.RELEASE_DATE));
                 movie.setRating(movieJson.getString(PopConstants.VOTE_AVERAGE));
 
-                moviesList.add(movie);
+                mMoviesList.add(movie);
             }
         } catch (JSONException e) {
             e.printStackTrace();
