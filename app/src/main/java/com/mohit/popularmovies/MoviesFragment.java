@@ -72,7 +72,7 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
      */
     private void updateMoviesData() {
         if (PopUtility.isNetworkConnected(getActivity())) {
-            FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this);
+            FetchMoviesAsync moviesAsync = new FetchMoviesAsync(this, getActivity());
             SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sort_by_preference = mPreferences.getString(getString(R.string.pref_sort_key),
                     getString(R.string.pref_sort_default));

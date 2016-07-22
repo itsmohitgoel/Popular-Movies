@@ -14,12 +14,14 @@ public class PopConstants {
 
     // JSON keys
     public static final String RESULTS = "results";
+    public static final String MOVIE_API_ID = "id";
     public static final String ORIGINAL_TITLE = "original_title";
     public static final String POSTER_PATH = "poster_path";
     public static final String BACKDROP_PATH = "backdrop_path";
     public static final String OVERVIEW = "overview";
     public static final String RELEASE_DATE = "release_date";
     public static final String VOTE_AVERAGE = "vote_average";
+    public static final String POPULARITY = "popularity";
 
     //IMAGE Query URls
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";

@@ -1,10 +1,15 @@
 package com.mohit.popularmovies.webservices;
 
+import android.content.ContentValues;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.mohit.popularmovies.beans.MovieItem;
+import com.mohit.popularmovies.data.MovieContract.MovieEntry;
 import com.mohit.popularmovies.listeners.IAsyncListener;
 import com.mohit.popularmovies.utils.PopConstants;
 
@@ -19,6 +24,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Perform Networking operations
@@ -28,12 +34,14 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
     private final String LOG_TAG = FetchMoviesAsync.class.getSimpleName();
     public IAsyncListener mListener; //Listener to send data back to activity
     private ArrayList<MovieItem> mMoviesList; // To be updated via Jsonparsing
+    private Context mContext;
 
-    public FetchMoviesAsync(IAsyncListener listener) {
+    public FetchMoviesAsync(IAsyncListener listener, Context context) {
         if (listener == null) {
             throw new IllegalArgumentException("Listener argument can't be null");
         }
         mListener = listener;
+        mContext = context;
     }
 
     @Override
@@ -116,20 +124,63 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
             JSONObject jsonObject = new JSONObject(result);
             JSONArray jsonArray = jsonObject.getJSONArray("results");
 
-            mMoviesList = new ArrayList<>(jsonArray.length());
-            MovieItem movie;
+            MovieItem movieItem;
+            Vector<ContentValues> cvVector = new Vector<>(jsonArray.length());
 
-            for (int i = 0; i < jsonArray.length(); i++) {
+            for(int i = 0; i <  jsonArray.length(); i++) {
                 JSONObject movieJson = jsonArray.getJSONObject(i);
-                movie = new MovieItem();
-                movie.setTitle(movieJson.getString(PopConstants.ORIGINAL_TITLE));
-                movie.setPosterPath(movieJson.getString(PopConstants.POSTER_PATH));
-                movie.setBackdropPath(movieJson.getString(PopConstants.BACKDROP_PATH));
-                movie.setSummary(movieJson.getString(PopConstants.OVERVIEW));
-                movie.setReleaseDate(movieJson.getString(PopConstants.RELEASE_DATE));
-                movie.setRating(movieJson.getString(PopConstants.VOTE_AVERAGE));
 
-                mMoviesList.add(movie);
+                int movieID = movieJson.getInt(PopConstants.MOVIE_API_ID);
+                String originalTitle = movieJson.getString(PopConstants.ORIGINAL_TITLE);
+                String overview = movieJson.getString(PopConstants.OVERVIEW);
+                String releaseDate = movieJson.getString(PopConstants.RELEASE_DATE);
+                String voteAverage = movieJson.getString(PopConstants.VOTE_AVERAGE);
+                String posterPath = movieJson.getString(PopConstants.POSTER_PATH);
+                String backdropPath = movieJson.getString(PopConstants.BACKDROP_PATH);
+                float popularity = (float)movieJson.getDouble(PopConstants.POPULARITY);
+
+                ContentValues movieValues = new ContentValues();
+                movieValues.put(MovieEntry.COLUMN_MOVIE_ID, movieID);
+                movieValues.put(MovieEntry.COLUMN_ORIGINAL_TITLE, originalTitle);
+                movieValues.put(MovieEntry.COLUMN_OVERVIEW, overview);
+                movieValues.put(MovieEntry.COLUMN_RELEASE_DATE, releaseDate);
+                movieValues.put(MovieEntry.COLUMN_VOTE_AVERAGE, voteAverage);
+                movieValues.put(MovieEntry.COLUMN_POSTER_PATH, posterPath);
+                movieValues.put(MovieEntry.COLUMN_BACKDROP_PATH, backdropPath);
+                movieValues.put(MovieEntry.COLUMN_POPULARITY, popularity);
+
+                cvVector.add(movieValues);
+            }
+
+            //add all to database via bulkInsert call;
+            int insertCount = 0;
+            if (cvVector.size() > 0) {
+                ContentValues[] cvArray = new ContentValues[cvVector.size()];
+                cvVector.toArray(cvArray);
+                insertCount = mContext.getContentResolver().bulkInsert(MovieEntry.CONTENT_URI, cvArray);
+
+            }
+            Log.d(LOG_TAG, "inserted " + insertCount + " records in DB!");
+
+            //Display What I inserted into database, by updating the data in adapter again.
+            Cursor cur = mContext.getContentResolver().query(MovieEntry.CONTENT_URI,null,null,null,null);
+            mMoviesList = new ArrayList<>(cur.getCount());
+            if (cur.moveToFirst()) {
+                do {
+                    ContentValues cv = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(cur, cv);
+                    movieItem = new MovieItem();
+                    movieItem.setMovieIdApi( cv.getAsInteger(MovieEntry.COLUMN_MOVIE_ID));
+                    movieItem.setTitle((String) cv.get(MovieEntry.COLUMN_ORIGINAL_TITLE));
+                    movieItem.setPosterPath((String) cv.get(MovieEntry.COLUMN_POSTER_PATH));
+                    movieItem.setBackdropPath((String) cv.get(MovieEntry.COLUMN_BACKDROP_PATH));
+                    movieItem.setSummary((String) cv.get(MovieEntry.COLUMN_OVERVIEW));
+                    movieItem.setReleaseDate((String) cv.get(MovieEntry.COLUMN_RELEASE_DATE));
+                    movieItem.setRating((String) cv.get(MovieEntry.COLUMN_VOTE_AVERAGE));
+                    movieItem.setPopularity((float)cv.getAsFloat(MovieEntry.COLUMN_POPULARITY));
+
+                    mMoviesList.add(movieItem);
+                } while (cur.moveToNext());
             }
         } catch (JSONException e) {
             e.printStackTrace();
