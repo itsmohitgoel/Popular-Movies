@@ -25,6 +25,8 @@ public class PopConstants {
 
     //IMAGE Query URls
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
+    public static final String BASE_TRAILER_THUMB_URL = "http://img.youtube.com/vi/";
+    public static final String YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v=";
 
     //Movie intent key
     public static final String MOVIE_KEY = "movie";
