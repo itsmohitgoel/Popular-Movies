@@ -2,8 +2,6 @@ package com.mohit.popularmovies.webservices;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -23,7 +21,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -33,7 +30,6 @@ import java.util.Vector;
 public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
     private final String LOG_TAG = FetchMoviesAsync.class.getSimpleName();
     public IAsyncListener mListener; //Listener to send data back to activity
-    private ArrayList<MovieItem> mMoviesList; // To be updated via Jsonparsing
     private Context mContext;
 
     public FetchMoviesAsync(IAsyncListener listener, Context context) {
@@ -114,11 +110,8 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        if (mMoviesList != null) {
-            mListener.onAsyncEnd(mMoviesList);
-        }
+            mListener.onAsyncEnd();
     }
-
     private void parseJson(String result) {
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -161,27 +154,6 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
             }
             Log.d(LOG_TAG, "inserted " + insertCount + " records in DB!");
-
-            //Display What I inserted into database, by updating the data in adapter again.
-            Cursor cur = mContext.getContentResolver().query(MovieEntry.CONTENT_URI,null,null,null,null);
-            mMoviesList = new ArrayList<>(cur.getCount());
-            if (cur.moveToFirst()) {
-                do {
-                    ContentValues cv = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(cur, cv);
-                    movieItem = new MovieItem();
-                    movieItem.setMovieIdApi( cv.getAsInteger(MovieEntry.COLUMN_MOVIE_ID));
-                    movieItem.setTitle((String) cv.get(MovieEntry.COLUMN_ORIGINAL_TITLE));
-                    movieItem.setPosterPath((String) cv.get(MovieEntry.COLUMN_POSTER_PATH));
-                    movieItem.setBackdropPath((String) cv.get(MovieEntry.COLUMN_BACKDROP_PATH));
-                    movieItem.setSummary((String) cv.get(MovieEntry.COLUMN_OVERVIEW));
-                    movieItem.setReleaseDate((String) cv.get(MovieEntry.COLUMN_RELEASE_DATE));
-                    movieItem.setRating((String) cv.get(MovieEntry.COLUMN_VOTE_AVERAGE));
-                    movieItem.setPopularity((float)cv.getAsFloat(MovieEntry.COLUMN_POPULARITY));
-
-                    mMoviesList.add(movieItem);
-                } while (cur.moveToNext());
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }

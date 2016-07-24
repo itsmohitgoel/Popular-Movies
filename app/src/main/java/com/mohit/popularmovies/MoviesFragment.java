@@ -1,8 +1,8 @@
 package com.mohit.popularmovies;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -10,18 +10,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.mohit.popularmovies.adapters.MoviesAdapter;
 import com.mohit.popularmovies.beans.MovieItem;
+import com.mohit.popularmovies.data.MovieContract;
 import com.mohit.popularmovies.listeners.IAsyncListener;
 import com.mohit.popularmovies.utils.PopConstants;
 import com.mohit.popularmovies.utils.PopUtility;
 import com.mohit.popularmovies.webservices.FetchMoviesAsync;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -52,18 +51,17 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
 
-        mAdapter = new MoviesAdapter(getActivity(), mGridList);
-        mGridView.setAdapter(mAdapter);
-        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                MovieItem movie = mAdapter.getItem(position);
-                Intent intentMovie = new Intent(getActivity(), MovieDetailActivity.class);
-                intentMovie.putExtra(PopConstants.MOVIE_KEY, movie);
-                startActivity(intentMovie);
-            }
-        });
+        //Initialize the adapter
+        String sortOrder = normalizeSortingOrder();
+        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, sortOrder);
+        Log.d(LOG_TAG, "No. of movies retrieved from db : " + cursor.getCount());
 
+        // The CursorAdapter will take the data from cursor and populate the GridView
+        // However, we can't use the FLAG_AURO_QUERY since its deprecated, so we will
+        // end up with empty grid the first time we run.
+
+        mAdapter = new MoviesAdapter(getActivity(), cursor, 0);
+        mGridView.setAdapter(mAdapter);
         return rootView;
     }
 
@@ -90,16 +88,13 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
     }
 
     @Override
-    public void onAsyncEnd(List<MovieItem> movieList) {
+    public void onAsyncEnd() {
             Log.d(LOG_TAG, "on Async End");
         if(mProgressBar != null){
             mProgressBar.cancel();
             mProgressBar = null;
             Log.d(LOG_TAG, "Progress End");
         }
-        mGridList = (ArrayList<MovieItem>) movieList;
-        mAdapter.clear();
-        mAdapter.setMoviesList((ArrayList<MovieItem>) movieList);
     }
 
     @Override
@@ -112,5 +107,23 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
     public void onSaveInstanceState(Bundle outState) {
         outState.putParcelableArrayList(PopConstants.MOVIES_KEY, mGridList);
         super.onSaveInstanceState(outState);
+    }
+
+    /**
+     *  Return the sorting order to in terms of db 'movie' table
+     *  column name.
+     */
+    private String normalizeSortingOrder(){
+        SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sort_by_preference = mPreferences.getString(getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_default));
+
+        String sortOrderDB = "";
+        if (sort_by_preference.equals(getString(R.string.pref_sort_by_popularity_value))) {
+            sortOrderDB = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
+        }else {
+            sortOrderDB = MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC";
+        }
+        return sortOrderDB;
     }
 }

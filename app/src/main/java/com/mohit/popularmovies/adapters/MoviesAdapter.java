@@ -1,6 +1,9 @@
 package com.mohit.popularmovies.adapters;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.support.v4.widget.CursorAdapter;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,68 +11,40 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.mohit.popularmovies.R;
-import com.mohit.popularmovies.beans.MovieItem;
+import com.mohit.popularmovies.data.MovieContract;
 import com.mohit.popularmovies.utils.PopConstants;
 import com.squareup.picasso.Picasso;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /** Custome Adapter to bind images to the gridview
  * Created by Mohit on 15-05-2016.
  */
-public class MoviesAdapter extends ArrayAdapter<MovieItem> {
-    private Context mContext;
-    private List<MovieItem> mMoviesList;
+public class MoviesAdapter extends CursorAdapter {
     private final String LOG_TAG = ArrayAdapter.class.getSimpleName();
 
-    public MoviesAdapter(Context context, List<MovieItem> movieItemList) {
-        super(context, 0, movieItemList);
-        this.mContext = context;
-        this.mMoviesList = movieItemList;
+    public MoviesAdapter(Context context, Cursor c , int flags) {
+        super(context, c, flags);
     }
 
-    public void setMoviesList(ArrayList<MovieItem> mList) {
-        this.mMoviesList = mList;
-        notifyDataSetChanged();
+    /*
+        These views will be reused as needed
+     */
+    @Override
+    public View newView(Context context, Cursor cursor, ViewGroup parent) {
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.grid_item_movie, parent, false);
+
+        Log.d(LOG_TAG, "Called newView()");
+        return view;
     }
 
     @Override
-    public int getCount() {
-        return mMoviesList.size();
-    }
+    public void bindView(View view, Context context, Cursor cursor) {
+        ImageView imageView = (ImageView) view.findViewById(R.id.grid_item_movie_imageView);
+        int moviePosterPathIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
+        String moviePosterURL = cursor.getString(moviePosterPathIndex);
 
-    @Override
-    public MovieItem getItem(int position) {
-        return mMoviesList.get(position);
-    }
+        Picasso.with(context).load(PopConstants.BASE_IMAGE_URL + moviePosterURL).into(imageView);
 
-    //ViewHolder class for smoother scrolling
-    static class ViewHolder{
-        ImageView imageView;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View row = convertView;
-        ViewHolder holder;
-
-        if (row == null) {  //First time, inflate the container view
-            LayoutInflater inflater = LayoutInflater.from(mContext);
-            row = inflater.inflate(R.layout.grid_item_movie, parent, false);
-            holder = new ViewHolder();
-            holder.imageView = (ImageView) row.findViewById(R.id.grid_item_movie_imageView);
-            row.setTag(holder);
-        }else{  //second time, re-utilize the recycler view
-            holder = (ViewHolder) row.getTag();
-        }
-
-        MovieItem item = mMoviesList.get(position);
-        if (!item.getPosterPath().equalsIgnoreCase("null")) {
-            Picasso.with(mContext).load(PopConstants.BASE_IMAGE_URL + item.getPosterPath()).into(holder.imageView);
-        }else{ // If API returns null for the poster image, display sample image.
-            Picasso.with(mContext).load(R.drawable.not_availaible).into(holder.imageView);
-        }
-        return row;
+        Log.d(LOG_TAG, "called bindView() with imageURL = '" + moviePosterURL + "'");
     }
 }
