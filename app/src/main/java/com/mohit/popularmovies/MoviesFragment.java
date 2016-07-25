@@ -5,7 +5,11 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,12 +29,13 @@ import java.util.ArrayList;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MoviesFragment extends Fragment implements IAsyncListener {
+public class MoviesFragment extends Fragment implements IAsyncListener, LoaderManager.LoaderCallbacks<Cursor> {
     private final String LOG_TAG = MoviesFragment.class.getSimpleName();
     private GridView mGridView;
-    private MoviesAdapter mAdapter; //Custom Adapter for movies data
+    private MoviesAdapter mMoviesAdapter; //Custom Adapter for movies data
     private ArrayList<MovieItem> mGridList;
     private ProgressDialog mProgressBar;
+    private static final int MOVIES_LOADER = 0;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,22 +51,25 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        LoaderManager lm = getLoaderManager();
+        lm.initLoader(MOVIES_LOADER, null, this);
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
         mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
 
         //Initialize the adapter
-        String sortOrder = normalizeSortingOrder();
-        Cursor cursor = getActivity().getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI, null, null, null, sortOrder);
-        Log.d(LOG_TAG, "No. of movies retrieved from db : " + cursor.getCount());
-
+        
         // The CursorAdapter will take the data from cursor and populate the GridView
         // However, we can't use the FLAG_AURO_QUERY since its deprecated, so we will
         // end up with empty grid the first time we run.
-
-        mAdapter = new MoviesAdapter(getActivity(), cursor, 0);
-        mGridView.setAdapter(mAdapter);
+        mMoviesAdapter = new MoviesAdapter(getActivity(), null, 0);
+        mGridView.setAdapter(mMoviesAdapter);
         return rootView;
     }
 
@@ -125,5 +133,28 @@ public class MoviesFragment extends Fragment implements IAsyncListener {
             sortOrderDB = MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC";
         }
         return sortOrderDB;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String sortOrder = normalizeSortingOrder();
+        CursorLoader cLoader = new CursorLoader(getActivity(),
+                MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                sortOrder);
+        return cLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.d(LOG_TAG, "No. of movies retrieved from db by onLoadFinished() : " + data.getCount());
+        mMoviesAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mMoviesAdapter.swapCursor(null);
     }
 }
