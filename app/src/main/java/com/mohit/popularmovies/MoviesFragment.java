@@ -41,8 +41,8 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (savedInstanceState == null || !savedInstanceState.containsKey(PopConstants.MOVIES_KEY)) {
-            mGridList =  new ArrayList<MovieItem>();
-        }else {
+            mGridList = new ArrayList<MovieItem>();
+        } else {
             mGridList = savedInstanceState.getParcelableArrayList(PopConstants.MOVIES_KEY);
         }
     }
@@ -64,7 +64,7 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         mGridView = (GridView) rootView.findViewById(R.id.gridview_movies);
 
         //Initialize the adapter
-        
+
         // The CursorAdapter will take the data from cursor and populate the GridView
         // However, we can't use the FLAG_AURO_QUERY since its deprecated, so we will
         // end up with empty grid the first time we run.
@@ -73,7 +73,8 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         return rootView;
     }
 
-    /** Download Movies via AsyncTask, after checking the
+    /**
+     * Download Movies via AsyncTask, after checking the
      * n/w status, and getting user defined sort order settings
      */
     private void updateMoviesData() {
@@ -97,8 +98,8 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
 
     @Override
     public void onAsyncEnd() {
-            Log.d(LOG_TAG, "on Async End");
-        if(mProgressBar != null){
+        Log.d(LOG_TAG, "on Async End");
+        if (mProgressBar != null) {
             mProgressBar.cancel();
             mProgressBar = null;
             Log.d(LOG_TAG, "Progress End");
@@ -118,10 +119,10 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
     }
 
     /**
-     *  Return the sorting order to in terms of db 'movie' table
-     *  column name.
+     * Return the sorting order to in terms of db 'movie' table
+     * column name.
      */
-    private String normalizeSortingOrder(){
+    private String normalizeSortingOrder() {
         SharedPreferences mPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         String sort_by_preference = mPreferences.getString(getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_default));
@@ -129,7 +130,7 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         String sortOrderDB = "";
         if (sort_by_preference.equals(getString(R.string.pref_sort_by_popularity_value))) {
             sortOrderDB = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
-        }else {
+        } else {
             sortOrderDB = MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC";
         }
         return sortOrderDB;
