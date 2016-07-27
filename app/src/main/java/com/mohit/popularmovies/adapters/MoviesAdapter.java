@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
 import com.mohit.popularmovies.R;
@@ -15,13 +14,14 @@ import com.mohit.popularmovies.data.MovieContract;
 import com.mohit.popularmovies.utils.PopConstants;
 import com.squareup.picasso.Picasso;
 
-/** Custome Adapter to bind images to the gridview
+/**
+ * Custome Adapter to bind images to the gridview
  * Created by Mohit on 15-05-2016.
  */
 public class MoviesAdapter extends CursorAdapter {
-    private final String LOG_TAG = ArrayAdapter.class.getSimpleName();
+    private final String LOG_TAG = MoviesAdapter.class.getSimpleName();
 
-    public MoviesAdapter(Context context, Cursor c , int flags) {
+    public MoviesAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
     }
 
