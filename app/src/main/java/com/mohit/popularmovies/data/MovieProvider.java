@@ -238,13 +238,13 @@ public class MovieProvider extends ContentProvider {
                         }
                     }
                     db.setTransactionSuccessful();
-                }finally {
+                } finally {
                     db.endTransaction();
                 }
                 break;
             case TRAILER:
                 db.beginTransaction();
-                try{
+                try {
                     for (ContentValues value : values) {
                         long _id = db.insert(TrailerEntry.TABLE_NAME, null, value);
 
@@ -253,7 +253,7 @@ public class MovieProvider extends ContentProvider {
                         }
                     }
                     db.setTransactionSuccessful();
-                }finally {
+                } finally {
                     db.endTransaction();
                 }
                 break;
