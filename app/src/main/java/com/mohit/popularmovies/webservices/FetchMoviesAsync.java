@@ -110,8 +110,9 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-            mListener.onAsyncEnd();
+        mListener.onAsyncEnd();
     }
+
     private void parseJson(String result) {
         try {
             JSONObject jsonObject = new JSONObject(result);
@@ -120,7 +121,7 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
             MovieItem movieItem;
             Vector<ContentValues> cvVector = new Vector<>(jsonArray.length());
 
-            for(int i = 0; i <  jsonArray.length(); i++) {
+            for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject movieJson = jsonArray.getJSONObject(i);
 
                 int movieID = movieJson.getInt(PopConstants.MOVIE_API_ID);
@@ -130,7 +131,7 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
                 String voteAverage = movieJson.getString(PopConstants.VOTE_AVERAGE);
                 String posterPath = movieJson.getString(PopConstants.POSTER_PATH);
                 String backdropPath = movieJson.getString(PopConstants.BACKDROP_PATH);
-                float popularity = (float)movieJson.getDouble(PopConstants.POPULARITY);
+                float popularity = (float) movieJson.getDouble(PopConstants.POPULARITY);
 
                 ContentValues movieValues = new ContentValues();
                 movieValues.put(MovieEntry.COLUMN_MOVIE_ID, movieID);
