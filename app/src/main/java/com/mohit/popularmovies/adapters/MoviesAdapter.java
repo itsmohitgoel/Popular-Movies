@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.mohit.popularmovies.MoviesFragment;
 import com.mohit.popularmovies.R;
 import com.mohit.popularmovies.data.MovieContract;
 import com.mohit.popularmovies.utils.PopConstants;
@@ -41,7 +42,7 @@ public class MoviesAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         ImageView imageView = (ImageView) view.findViewById(R.id.grid_item_movie_imageView);
         int moviePosterPathIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
-        String moviePosterURL = cursor.getString(moviePosterPathIndex);
+        String moviePosterURL = cursor.getString(MoviesFragment.COL_POSTER_PATH);
 
         Picasso.with(context).load(PopConstants.BASE_IMAGE_URL + moviePosterURL).into(imageView);
 

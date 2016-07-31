@@ -37,6 +37,16 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
     private ProgressDialog mProgressBar;
     private static final int MOVIES_LOADER = 0;
 
+    // For the Movies view, we are showing only a small subset of stored data,
+    // specify the columns we need.
+    private static final String[] MOVIE_COLUMNS = {
+            MovieContract.MovieEntry._ID,
+            MovieContract.MovieEntry.COLUMN_POSTER_PATH
+    };
+
+    public static final int COL_MOVIE_ID = 0;
+    public static final int COL_POSTER_PATH = 1;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -141,7 +151,7 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         String sortOrder = normalizeSortingOrder();
         CursorLoader cLoader = new CursorLoader(getActivity(),
                 MovieContract.MovieEntry.CONTENT_URI,
-                null,
+                MOVIE_COLUMNS,
                 null,
                 null,
                 sortOrder);
