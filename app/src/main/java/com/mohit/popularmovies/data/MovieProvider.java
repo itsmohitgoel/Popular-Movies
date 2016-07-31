@@ -78,12 +78,12 @@ public class MovieProvider extends ContentProvider {
                 );
                 break;
             case MOVIE_WITH_ID:
-                mMovieQueryBuilder.appendWhere(
-                        MovieContract.MovieEntry._ID + " = " + uri.getPathSegments().get(1));
+                String movieRowID = uri.getPathSegments().get(1);
+                String movieSelection = MovieEntry.TABLE_NAME + "." + MovieEntry._ID + " = ?";
                 cursor = mMovieQueryBuilder.query(db,
                         projection,
-                        selection,
-                        selectionArgs,
+                        movieSelection,
+                        new String[]{movieRowID},
                         null, null,
                         sortOrder);
                 break;
