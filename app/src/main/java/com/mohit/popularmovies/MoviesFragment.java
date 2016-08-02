@@ -1,8 +1,10 @@
 package com.mohit.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -14,6 +16,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.mohit.popularmovies.adapters.MoviesAdapter;
@@ -80,6 +83,19 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         // end up with empty grid the first time we run.
         mMoviesAdapter = new MoviesAdapter(getActivity(), null, 0);
         mGridView.setAdapter(mMoviesAdapter);
+        mGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Cursor cursor = (Cursor) parent.getItemAtPosition(position);
+                if (cursor != null) {
+                    long movieID = cursor.getLong(COL_MOVIE_ID);
+                Uri movieSelectedUri = MovieContract.MovieEntry.buildMovieUri(movieID);
+                Intent intentMovie = new Intent(getActivity(), MovieDetailActivity.class);
+                    intentMovie.setData(movieSelectedUri);
+                    startActivity(intentMovie);
+                }
+            }
+        });
         return rootView;
     }
 
