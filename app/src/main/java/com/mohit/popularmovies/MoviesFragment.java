@@ -184,4 +184,9 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
     public void onLoaderReset(Loader<Cursor> loader) {
         mMoviesAdapter.swapCursor(null);
     }
+
+    public void onSortingChaged() {
+        updateMoviesData();
+        getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
+    }
 }

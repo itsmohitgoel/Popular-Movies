@@ -10,7 +10,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.mohit.popularmovies.utils.PopUtility;
+
 public class MainActivity extends AppCompatActivity {
+    private String mSortingSetting;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        mSortingSetting = PopUtility.getSortingPreferrence(this);
     }
 
     @Override
@@ -58,6 +63,20 @@ public class MainActivity extends AppCompatActivity {
             }else {
                 actionBar.setTitle(String.format("%s Movies",getString(R.string.pref_sort_by_rating_label)));
             }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        String sortPreference = PopUtility.getSortingPreferrence(this);
+
+        if (sortPreference != null && !sortPreference.equals(mSortingSetting)) {
+            MoviesFragment fragment = (MoviesFragment) getSupportFragmentManager().findFragmentById(R.id.movies_fragment);
+            if (fragment != null) {
+                fragment.onSortingChaged();
+            }
+            mSortingSetting = sortPreference;
         }
     }
 }
