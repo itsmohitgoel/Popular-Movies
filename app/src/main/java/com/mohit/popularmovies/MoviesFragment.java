@@ -14,6 +14,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -58,6 +59,7 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         } else {
             mGridList = savedInstanceState.getParcelableArrayList(PopConstants.MOVIES_KEY);
         }
+        setHasOptionsMenu(true);
     }
 
     public MoviesFragment() {
@@ -188,5 +190,16 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
     public void onSortingChaged() {
         updateMoviesData();
         getLoaderManager().restartLoader(MOVIES_LOADER, null, this);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_refresh) {
+            updateMoviesData();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
