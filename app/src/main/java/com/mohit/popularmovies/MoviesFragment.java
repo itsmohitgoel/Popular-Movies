@@ -91,8 +91,8 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
                 Cursor cursor = (Cursor) parent.getItemAtPosition(position);
                 if (cursor != null) {
                     long movieID = cursor.getLong(COL_MOVIE_ID);
-                Uri movieSelectedUri = MovieContract.MovieEntry.buildMovieUri(movieID);
-                Intent intentMovie = new Intent(getActivity(), MovieDetailActivity.class);
+                    Uri movieSelectedUri = MovieContract.MovieEntry.buildMovieUri(movieID);
+                    Intent intentMovie = new Intent(getActivity(), MovieDetailActivity.class);
                     intentMovie.setData(movieSelectedUri);
                     startActivity(intentMovie);
                 }
@@ -132,12 +132,6 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
             mProgressBar = null;
             Log.d(LOG_TAG, "Progress End");
         }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateMoviesData();
     }
 
     @Override
