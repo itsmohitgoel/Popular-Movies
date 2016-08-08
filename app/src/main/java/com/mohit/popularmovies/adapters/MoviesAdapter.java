@@ -3,7 +3,6 @@ package com.mohit.popularmovies.adapters;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.CursorAdapter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,7 +10,6 @@ import android.widget.ImageView;
 
 import com.mohit.popularmovies.MoviesFragment;
 import com.mohit.popularmovies.R;
-import com.mohit.popularmovies.data.MovieContract;
 import com.mohit.popularmovies.utils.PopConstants;
 import com.squareup.picasso.Picasso;
 
@@ -34,18 +32,14 @@ public class MoviesAdapter extends CursorAdapter {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.grid_item_movie, parent, false);
 
-        Log.d(LOG_TAG, "Called newView()");
         return view;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         ImageView imageView = (ImageView) view.findViewById(R.id.grid_item_movie_imageView);
-        int moviePosterPathIndex = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER_PATH);
         String moviePosterURL = cursor.getString(MoviesFragment.COL_POSTER_PATH);
 
         Picasso.with(context).load(PopConstants.BASE_IMAGE_URL + moviePosterURL).into(imageView);
-
-        Log.d(LOG_TAG, "called bindView() with imageURL = '" + moviePosterURL + "'");
     }
 }

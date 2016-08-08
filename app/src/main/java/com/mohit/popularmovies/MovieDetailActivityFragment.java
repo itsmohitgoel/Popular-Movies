@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +65,6 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(LOG_TAG, "Inside onCreateLoader of Detail");
-
         Intent intent = getActivity().getIntent();
         if (intent == null) {
             return null;
@@ -89,7 +86,6 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.d(LOG_TAG, "Inside onLoadFinished of Detail");
         if (!data.moveToFirst()) {
             return;
         }
@@ -127,7 +123,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
                 }
             });
-        }else{
+        } else {
             Picasso.with(getActivity()).load(R.drawable.not_availaible).into(vPoster, new Callback() {
                 @Override
                 public void onSuccess() {
