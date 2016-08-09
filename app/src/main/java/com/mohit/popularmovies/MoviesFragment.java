@@ -134,12 +134,6 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         }
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(PopConstants.MOVIES_KEY, mGridList);
-        super.onSaveInstanceState(outState);
-    }
-
     /**
      * Return the sorting order to in terms of db 'movie' table
      * column name.
