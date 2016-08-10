@@ -70,6 +70,16 @@
                 android:layout_marginTop="5dp"
                 android:text="8.1/10"
                 android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="@string/mark_as_favourite_text"
+                android:background="#5c6bc0"
+                android:textColor="#ffffff"
+                android:id="@+id/button_mark_as_favourite" />
         </LinearLayout>
     </LinearLayout>
 
