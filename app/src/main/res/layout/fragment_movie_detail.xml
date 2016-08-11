@@ -1,11 +1,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-
-    tools:context="com.mohit.popularmovies.MovieDetailActivityFragment"
-    tools:showIn="@layout/activity_movie_detail">
+    android:orientation="vertical">
 
 
     <TextView
@@ -25,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="5dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:orientation="horizontal">
 
         <ImageView
@@ -72,21 +68,19 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Button
+                android:id="@+id/button_mark_as_favourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
-                android:paddingRight="8dp"
-                android:text="@string/mark_as_favourite_text"
                 android:background="#5c6bc0"
-                android:textColor="#ffffff"
-                android:id="@+id/button_mark_as_favourite" />
+                android:text="@string/mark_as_favourite_text"
+                android:textColor="#ffffff" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="3"
+        android:layout_weight="4"
         android:orientation="vertical">
 
         <ScrollView
