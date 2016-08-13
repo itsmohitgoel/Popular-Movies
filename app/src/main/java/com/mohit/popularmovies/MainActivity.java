@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +16,7 @@ import com.mohit.popularmovies.utils.PopUtility;
 
 public class MainActivity extends AppCompatActivity {
     private String mSortingSetting;
+    private boolean mTwoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +26,19 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         mSortingSetting = PopUtility.getSortingPreferrence(this);
+
+        if (findViewById(R.id.movie_detail_container) != null) {
+            mTwoPane = true;
+
+            if (savedInstanceState == null) {
+                FragmentManager fm = getSupportFragmentManager();
+                FragmentTransaction transaction = fm.beginTransaction();
+                transaction.add(R.id.movie_detail_container, new MovieDetailActivityFragment());
+                transaction.commit();
+            }
+        }else{
+            mTwoPane = false;
+        }
     }
 
     @Override
