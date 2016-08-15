@@ -1,7 +1,6 @@
 package com.mohit.popularmovies;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +27,8 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     private ProgressDialog mProgressBar;
     public static final String LOG_TAG = MovieDetailActivityFragment.class.getSimpleName();
     private static final int MOVIES_LOADER = 0;
+    public static final String DETAIL_URI = "URI";
+    private Uri mUri;
 
     //specify the columns required and utilize the Projection
     private static final String[] MOVIE_COLUMNS = {
@@ -52,6 +53,11 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Bundle argsBundle = getArguments();
+        if (argsBundle != null) {
+            mUri = argsBundle.getParcelable(MovieDetailActivityFragment.DETAIL_URI);
+        }
+
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         return rootView;
     }
@@ -65,22 +71,19 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Intent intent = getActivity().getIntent();
-        if (intent == null || intent.getData() == null) {
-            return null;
-        }
-
         // Now create and return a CursorLoader that will take care of creating
         // a Cursor for the data being displayed.
-        Uri movieDetailUri = intent.getData();
-        CursorLoader cLoader = new CursorLoader(
-                getActivity(),
-                movieDetailUri,
-                MOVIE_COLUMNS,
-                null,
-                null,
-                null
-        );
+        CursorLoader cLoader = null;
+        if (mUri != null) {
+            cLoader = new CursorLoader(
+                    getActivity(),
+                    mUri,
+                    MOVIE_COLUMNS,
+                    null,
+                    null,
+                    null
+            );
+        }
         return cLoader;
     }
 

@@ -19,7 +19,7 @@
         tools:layout="@layout/fragment_movies" />
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/weather_detail_container"
+        android:id="@+id/movie_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="3" />

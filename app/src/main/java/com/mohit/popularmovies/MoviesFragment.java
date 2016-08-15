@@ -1,7 +1,6 @@
 package com.mohit.popularmovies;
 
 import android.app.ProgressDialog;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
@@ -92,9 +91,8 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
                 if (cursor != null) {
                     long movieID = cursor.getLong(COL_MOVIE_ID);
                     Uri movieSelectedUri = MovieContract.MovieEntry.buildMovieUri(movieID);
-                    Intent intentMovie = new Intent(getActivity(), MovieDetailActivity.class);
-                    intentMovie.setData(movieSelectedUri);
-                    startActivity(intentMovie);
+                    ICallback callbackObject = (ICallback) getActivity();
+                    callbackObject.onMovieselected(movieSelectedUri);
                 }
             }
         });

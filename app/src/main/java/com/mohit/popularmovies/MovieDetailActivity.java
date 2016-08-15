@@ -17,9 +17,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (savedInstanceState == null) {
+            Bundle argsBundle = new Bundle();
+            argsBundle.putParcelable(MovieDetailActivityFragment.DETAIL_URI, getIntent().getData());
+
+            MovieDetailActivityFragment detailFragment = new MovieDetailActivityFragment();
+            detailFragment.setArguments(argsBundle);
+
             FragmentManager fm = getSupportFragmentManager();
             FragmentTransaction transaction = fm.beginTransaction();
-            transaction.add(R.id.movie_detail_container, new MovieDetailActivityFragment());
+            transaction.add(R.id.movie_detail_container, detailFragment);
             transaction.commit();
         }
     }

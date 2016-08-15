@@ -2,6 +2,7 @@ package com.mohit.popularmovies;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentManager;
@@ -14,7 +15,7 @@ import android.view.MenuItem;
 
 import com.mohit.popularmovies.utils.PopUtility;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesFragment.ICallback {
     private String mSortingSetting;
     private boolean mTwoPane;
 
@@ -93,6 +94,29 @@ public class MainActivity extends AppCompatActivity {
                 fragment.onSortingChaged();
             }
             mSortingSetting = sortPreference;
+        }
+    }
+
+    @Override
+    public void onMovieselected(Uri movieUri) {
+        if (mTwoPane) {
+            // In two pane mode, show the detail view in this activity by
+            // adding, replacing the detail fragment using a
+            // fragment trancsaction
+            Bundle argsBundle = new Bundle();
+            argsBundle.putParcelable(MovieDetailActivityFragment.DETAIL_URI, movieUri);
+
+            MovieDetailActivityFragment detailFragment = new MovieDetailActivityFragment();
+            detailFragment.setArguments(argsBundle);
+
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction transaction = fm.beginTransaction();
+            transaction.replace(R.id.movie_detail_container, detailFragment);
+            transaction.commit();
+        } else {
+            Intent intentMovie = new Intent(this, MovieDetailActivity.class);
+            intentMovie.setData(movieUri);
+            startActivity(intentMovie);
         }
     }
 }
