@@ -26,8 +26,11 @@ import com.mohit.popularmovies.listeners.IAsyncListener;
 import com.mohit.popularmovies.utils.PopConstants;
 import com.mohit.popularmovies.utils.PopUtility;
 import com.mohit.popularmovies.webservices.FetchMoviesAsync;
+import com.mohit.popularmovies.webservices.FetchTrailersAsync;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -110,8 +113,42 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
             String sort_by_preference = mPreferences.getString(getString(R.string.pref_sort_key),
                     getString(R.string.pref_sort_default));
             moviesAsync.execute(sort_by_preference);
+
+            // In order to launch FetchTrailersAsync task, need
+            // to do  a query first, in order to obtain list of movie ids
+            String[] columns = {MovieContract.MovieEntry._ID, MovieContract.MovieEntry.COLUMN_MOVIE_ID};
+            Cursor cursor = getActivity().getContentResolver().query(
+                    MovieContract.MovieEntry.CONTENT_URI,
+                    columns,
+                    null,
+                    null,
+                    null
+            );
+
+            Map<String, String> moviesIdMap = getMoviesIdMap(cursor);
+
+            // Starting HONEYCOMB, I know asynctask will run sequentially one after other,
+            // so I don't need to write code for manual synchronization
+            FetchTrailersAsync trailersAsync = new FetchTrailersAsync(this, getActivity());
+            trailersAsync.execute(moviesIdMap);
         }
     }
+
+    private Map<String,String> getMoviesIdMap(Cursor cursor) {
+        Map<String, String> movieIdsMap = new HashMap<>(cursor.getCount());
+
+        int idxMovieRowID = cursor.getColumnIndex(MovieContract.MovieEntry._ID);
+        int idxMovieApiID = cursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_MOVIE_ID);
+
+        while (cursor.moveToNext()) {
+            String movieRowID = cursor.getString(idxMovieRowID);
+            String movieApiID = cursor.getString(idxMovieApiID);
+            movieIdsMap.put(movieRowID, movieApiID);
+        }
+
+        return  movieIdsMap;
+    }
+
 
     @Override
     public void onAsyncBegin() {
