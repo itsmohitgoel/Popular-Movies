@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.IC
                 transaction.add(R.id.movie_detail_container, new MovieDetailActivityFragment());
                 transaction.commit();
             }
-        }else{
+        } else {
             mTwoPane = false;
         }
     }
@@ -74,11 +74,11 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.IC
         String sortOrder = mPreferences.getString(getString(R.string.pref_sort_key), getString(R.string.pref_sort_default));
 
         ActionBar actionBar = getSupportActionBar();
-        if(actionBar != null) {
+        if (actionBar != null) {
             if (sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_popularity_value))) {
-                actionBar.setTitle(String.format("%s Movies",getString(R.string.pref_sort_by_popularity_label)));
-            }else {
-                actionBar.setTitle(String.format("%s Movies",getString(R.string.pref_sort_by_rating_label)));
+                actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_popularity_label)));
+            } else {
+                actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_rating_label)));
             }
         }
     }

@@ -194,9 +194,10 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
      * implement. This mechanism allows activities to be notified of item
      * selection
      */
-    public interface ICallback{
+    public interface ICallback {
         /**
          * DetailFragment callback for when an item is selected
+         *
          * @param movieUri containing row id of movie in local db i.e '_id'
          */
         public void onMovieselected(Uri movieUri);
