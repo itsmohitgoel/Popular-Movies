@@ -110,7 +110,7 @@ public class FetchMoviesAsync extends AsyncTask<String, Void, Void> {
 
     @Override
     protected void onPostExecute(Void aVoid) {
-        mListener.onAsyncEnd();
+//        mListener.onAsyncEnd();
     }
 
     private void parseJson(String result) {

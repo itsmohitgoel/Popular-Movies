@@ -41,7 +41,7 @@ public class FetchTrailersAsync extends AsyncTask<Map<String, String>, Void, Voi
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        //TODO notify callback object
+//        mTrailerCallback.onAsyncBegin();
     }
 
     @Override
@@ -116,6 +116,11 @@ public class FetchTrailersAsync extends AsyncTask<Map<String, String>, Void, Voi
             }
         }
         return null;
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        mTrailerCallback.onAsyncEnd();
     }
 
     private void parseJson(String trailerJsonString, long movieRowId) {
