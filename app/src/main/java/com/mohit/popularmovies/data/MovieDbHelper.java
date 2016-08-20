@@ -24,7 +24,7 @@ public class MovieDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         final String SQL_CREATE_MOVIE_TABLE = "CREATE TABLE " + MovieEntry.TABLE_NAME + " ( " +
                 MovieEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE ON CONFLICT REPLACE, " +
+                MovieEntry.COLUMN_MOVIE_ID + " INTEGER NOT NULL UNIQUE ON CONFLICT IGNORE, " +
                 MovieEntry.COLUMN_ORIGINAL_TITLE + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_OVERVIEW + " TEXT NOT NULL, " +
                 MovieEntry.COLUMN_RELEASE_DATE + " TEXT NOT NULL, " +
@@ -50,8 +50,8 @@ public class MovieDbHelper extends SQLiteOpenHelper {
 
                 // To assure the application have just one trailer per movie,
                 // it's created  a UNIQUE constraint with REPLACE Strategy
-                " UNIQUE (" + TrailerEntry._ID + ", " +
-                TrailerEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE" +
+                " UNIQUE (" + TrailerEntry.COLUMN_MOVIE_ID + ", " +
+                TrailerEntry.COLUMN_TRAILER_KEY + ") ON CONFLICT IGNORE" +
                 " );";
         db.execSQL(SQL_CREATE_TRAILER_TABLE);
     }
