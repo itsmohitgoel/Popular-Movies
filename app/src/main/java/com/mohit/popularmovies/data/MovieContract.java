@@ -44,6 +44,10 @@ public class MovieContract {
             Uri movieUri = ContentUris.withAppendedId(CONTENT_URI, id);
             return movieUri;
         }
+
+        public static long getMovieIdFromMovieUri(Uri uri) {
+            return Long.parseLong(uri.getLastPathSegment());
+        }
     }
 
     /* Inner class that defines the table contents of the trailer table */
