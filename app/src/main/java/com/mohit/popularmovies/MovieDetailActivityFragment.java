@@ -9,13 +9,16 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.mohit.popularmovies.data.MovieContract.MovieEntry;
+import com.mohit.popularmovies.data.MovieContract.TrailerEntry;
 import com.mohit.popularmovies.utils.PopConstants;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -27,8 +30,11 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     private ProgressDialog mProgressBar;
     public static final String LOG_TAG = MovieDetailActivityFragment.class.getSimpleName();
     private static final int MOVIES_LOADER = 0;
+    private static final int TRAILER_LOADER = 1;
+
     public static final String DETAIL_URI = "URI";
     private Uri mUri;
+    private LinearLayout mTrailerContainer;
 
     //specify the columns required and utilize the Projection
     private static final String[] MOVIE_COLUMNS = {
@@ -47,6 +53,24 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     private static final int COL_MOVIE_VOTE_AVERAGE = 4;
     private static final int COL_MOVIE_BACKDROP_PATH = 5;
 
+    //specify the columns for Trailer and define respecitive Projections
+    private static final String[] TRAILER_COLUMNS = {
+            TrailerEntry.TABLE_NAME + "." + TrailerEntry._ID,
+            TrailerEntry.COLUMN_MOVIE_ID,
+            TrailerEntry.COLUMN_NAME,
+            TrailerEntry.COLUMN_SITE,
+            TrailerEntry.COLUMN_TRAILER_KEY,
+            TrailerEntry.COLUMN_SIZE,
+            TrailerEntry.COLUMN_TYPE
+    };
+    private static final int COL_TRAILER_ID = 0;
+    private static final int COL_TRAILER_MOVIE_ID = 1;
+    private static final int COL_TRAILER_NAME = 2;
+    private static final int COL_TRAILER_SITE = 3;
+    private static final int COL_TRAILER_KEY = 4;
+    private static final int COL_TRAILER_SIZE = 5;
+    private static final int COL_TRAILER_TYPE = 6;
+
     public MovieDetailActivityFragment() {
     }
 
@@ -59,6 +83,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         }
 
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
+        mTrailerContainer = (LinearLayout) rootView.findViewById(R.id.trailers_container);
         return rootView;
     }
 
@@ -66,6 +91,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         LoaderManager lm = getLoaderManager();
         lm.initLoader(MOVIES_LOADER, null, this);
+        lm.initLoader(TRAILER_LOADER, null, new TrailerLoaderCallbacks());
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -147,5 +173,48 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    private class TrailerLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>{
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            // First need to construct trailer uri with movie id
+            CursorLoader cLoader  = null;
+            if (mUri != null) {
+                long movieUri = MovieEntry.getMovieIdFromMovieUri(mUri);
+                cLoader = new CursorLoader(getActivity(),
+                        TrailerEntry.buildTrailerUriWithMovieId(movieUri),
+                        TRAILER_COLUMNS,
+                        null,
+                        null,
+                        null);
+            }
+            return cLoader;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            if (data.getCount() == 0) {
+                return;
+            }
+            while (data.moveToNext()) {
+                Log.d(LOG_TAG, "movie_id : " + data.getString(0));
+                View trailerLayout = getActivity().getLayoutInflater().inflate(R.layout.view_trailer_item, null);
+                ImageView imageView = (ImageView) trailerLayout.findViewById(R.id.trailer_icon);
+                TextView textView = (TextView) trailerLayout.findViewById(R.id.trailer_label);
+
+                String trailerName = data.getString(COL_TRAILER_NAME);
+                final String trailerKey = data.getString(COL_TRAILER_KEY);
+
+                textView.setText(trailerName);
+                mTrailerContainer.addView(trailerLayout);
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
+        }
     }
 }
