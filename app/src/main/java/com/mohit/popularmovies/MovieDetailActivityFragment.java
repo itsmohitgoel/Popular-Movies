@@ -1,6 +1,7 @@
 package com.mohit.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -208,6 +209,17 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                 final String trailerKey = data.getString(COL_TRAILER_KEY);
 
                 textView.setText(trailerName);
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Uri trailerUri = Uri.parse(PopConstants.YOUTUBE_VIDEO_URL).buildUpon().appendQueryParameter(
+                                PopConstants.YOUTUBE_VIDEO_PARAM, trailerKey
+                        ).build();
+                        Intent intent = new Intent(Intent.ACTION_VIEW, trailerUri);
+                        startActivity(intent);
+                    }
+                });
+
                 mTrailerContainer.addView(trailerLayout);
             }
         }
