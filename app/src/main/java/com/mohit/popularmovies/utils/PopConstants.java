@@ -11,8 +11,9 @@ public class PopConstants {
     // API Query URLs with parameters
     public static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
     public static final String SORT_PARAM = "sort_by";
+    public static final String TRAILER_PATH = "videos";
 
-    // JSON keys
+    // JSON keys for movie and trailers
     public static final String RESULTS = "results";
     public static final String MOVIE_API_ID = "id";
     public static final String ORIGINAL_TITLE = "original_title";
@@ -23,10 +24,17 @@ public class PopConstants {
     public static final String VOTE_AVERAGE = "vote_average";
     public static final String POPULARITY = "popularity";
 
+    public static final String TRAILER_NAME = "name";
+    public static final String TRAILER_SITE = "site";
+    public static final String TRAILER_KEY = "key";
+    public static final String TRAILER_SIZE = "size";
+    public static final String TRAILER_TYPE = "type";
+
     //IMAGE Query URls
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
     public static final String BASE_TRAILER_THUMB_URL = "http://img.youtube.com/vi/";
-    public static final String YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch?v=";
+    public static final String YOUTUBE_VIDEO_URL = "https://www.youtube.com/watch";
+    public static final String YOUTUBE_VIDEO_PARAM = "v";
 
     //Movie intent key
     public static final String MOVIE_KEY = "movie";
