@@ -97,7 +97,7 @@ public class MovieProvider extends ContentProvider {
                 break;
             case TRAILER_WITH_MOVIE:
                 long movieID = MovieContract.TrailerEntry.getMovieIdFromTrailerUri(uri);
-                String trailerSelection = MovieContract.TrailerEntry.TABLE_NAME + "." + MovieContract.TrailerEntry.COLUMN_MOVIE_ID + " = ?";
+                String trailerSelection = TrailerEntry.TABLE_NAME + "." + TrailerEntry.COLUMN_MOVIE_ID + " = ?";
                 cursor = mMovieAndTrailerQueryBuilder.query(db,
                         projection,
                         trailerSelection,

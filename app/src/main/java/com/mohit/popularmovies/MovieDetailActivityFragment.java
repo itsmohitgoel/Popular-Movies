@@ -176,12 +176,12 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
     }
 
-    private class TrailerLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor>{
+    private class TrailerLoaderCallbacks implements LoaderManager.LoaderCallbacks<Cursor> {
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             // First need to construct trailer uri with movie id
-            CursorLoader cLoader  = null;
+            CursorLoader cLoader = null;
             if (mUri != null) {
                 long movieUri = MovieEntry.getMovieIdFromMovieUri(mUri);
                 cLoader = new CursorLoader(getActivity(),
