@@ -110,7 +110,7 @@ public class TestUtilities extends AndroidTestCase {
         ContentValues trailer2 = createTrailerValues(movieRowId, "Official Trailer 2", "YouTube", "fis-9Zqu2Ro", 1080, "Trailer");
         ContentValues trailer3 = createTrailerValues(movieRowId, "Official Final Trailer", "YouTube", "NhWg7AQLI_8", 1080, "Trailer");
         ContentValues trailer4 = createTrailerValues(movieRowId, "Official Teaser Trailer", "YouTube", "IwfUnkBfdZ4", 1080, "Trailer");
-        ContentValues trailer5 = createTrailerValues(movieRowId, "TV Spot 1", "YouTube", "IwfUnkBfdZ4", 1080, "Teaser");
+        ContentValues trailer5 = createTrailerValues(movieRowId, "TV Spot 1", "YouTube", "aUN0F5wKbGE", 1080, "Teaser");
         ContentValues trailer6 = createTrailerValues(movieRowId, "Official Comic-Con Trailer", "YouTube", "0WWzgGyAH6Y", 1080, "Trailer");
 
         ContentValues[] contentValuesArray = new ContentValues[]{trailer1, trailer2, trailer3, trailer4, trailer5, trailer6};
