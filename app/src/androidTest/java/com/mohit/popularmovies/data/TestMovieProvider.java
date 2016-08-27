@@ -168,7 +168,7 @@ public class TestMovieProvider extends AndroidTestCase {
                 null,
                 null,
                 null,
-                null);
+                TrailerEntry._ID + " ASC");
 
         assertTrue("Error : No trailer found in testMultipleTrailersQuery()", trailerCursor.moveToFirst());
         for (ContentValues testTrailerValues : testTrailerValuesArray) {
@@ -381,7 +381,7 @@ public class TestMovieProvider extends AndroidTestCase {
                 null,
                 null,
                 null,
-                null);
+                TrailerEntry._ID + " ASC");
 
         assertEquals("Error: every bulk record of trailer not inserted !", numOfBulkInserts, trailersCursor.getCount());
 
