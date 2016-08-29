@@ -38,6 +38,7 @@ public class MovieContract {
         public static final String COLUMN_POSTER_PATH = "poster_path";
         public static final String COLUMN_BACKDROP_PATH = "backdrop_path";
         public static final String COLUMN_POPULARITY = "popularity";
+        public static final String COLUMN_FAVOURITE = "favourite";
 
         // Uri constructor to build for a specific movie entry
         public static Uri buildMovieUri(long id) {
