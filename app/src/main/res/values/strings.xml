@@ -4,6 +4,9 @@
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_setteings">Settings</string>
     <string name="mark_as_favourite_text">Mark as Favourite</string>
+    <string name="unfavourite">Unfavourite</string>
+    <string name="marked_as_favourite">Successfully marked as Favourite</string>
+    <string name="marked_as_unfavourite">Successfully Removed from favourite list</string>
 
     <!-- Strings related to Settings -->
     <string name="pref_sort_by_title">Sort By</string>

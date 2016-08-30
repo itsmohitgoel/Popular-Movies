@@ -1,6 +1,7 @@
 package com.mohit.popularmovies;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -14,9 +15,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.mohit.popularmovies.data.MovieContract.MovieEntry;
 import com.mohit.popularmovies.data.MovieContract.TrailerEntry;
@@ -32,6 +35,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     public static final String LOG_TAG = MovieDetailActivityFragment.class.getSimpleName();
     private static final int MOVIES_LOADER = 0;
     private static final int TRAILER_LOADER = 1;
+    private TrailerLoaderCallbacks mtrailerCallback = new TrailerLoaderCallbacks();
 
     public static final String DETAIL_URI = "URI";
     private Uri mUri;
@@ -44,7 +48,8 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
             MovieEntry.COLUMN_OVERVIEW,
             MovieEntry.COLUMN_RELEASE_DATE,
             MovieEntry.COLUMN_VOTE_AVERAGE,
-            MovieEntry.COLUMN_BACKDROP_PATH
+            MovieEntry.COLUMN_BACKDROP_PATH,
+            MovieEntry.COLUMN_FAVOURITE,
     };
 
     private static final int COL_MOVIE_ID = 0;
@@ -53,6 +58,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     private static final int COL_MOVIE_RELEASE_DATE = 3;
     private static final int COL_MOVIE_VOTE_AVERAGE = 4;
     private static final int COL_MOVIE_BACKDROP_PATH = 5;
+    private static final int COL_MOVIE_FAVOURITE = 6;
 
     //specify the columns for Trailer and define respecitive Projections
     private static final String[] TRAILER_COLUMNS = {
@@ -85,6 +91,9 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
         View rootView = inflater.inflate(R.layout.fragment_movie_detail, container, false);
         mTrailerContainer = (LinearLayout) rootView.findViewById(R.id.trailers_container);
+        if (savedInstanceState != null) {
+            getLoaderManager().restartLoader(TRAILER_LOADER, null, mtrailerCallback);
+        }
         return rootView;
     }
 
@@ -92,7 +101,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         LoaderManager lm = getLoaderManager();
         lm.initLoader(MOVIES_LOADER, null, this);
-        lm.initLoader(TRAILER_LOADER, null, new TrailerLoaderCallbacks());
+        lm.initLoader(TRAILER_LOADER, null, mtrailerCallback);
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -125,12 +134,15 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         TextView vDate = (TextView) getView().findViewById(R.id.textView_movie_release_date);
         TextView vRating = (TextView) getView().findViewById(R.id.textview_move_rating);
         ImageView vPoster = (ImageView) getView().findViewById(R.id.imageView_poster);
+        final Button buttonFavourite = (Button) getView().findViewById(R.id.button_mark_as_favourite);
 
+        final String movieRowId = data.getString(COL_MOVIE_ID);
         String title = data.getString(COL_MOVIE_TITLE);
         String overview = data.getString(COL_MOVIE_OVERVIEW);
         String releaseDate = data.getString(COL_MOVIE_RELEASE_DATE);
         String rating = data.getString(COL_MOVIE_VOTE_AVERAGE);
         String backdropPath = data.getString(COL_MOVIE_BACKDROP_PATH);
+        final boolean isFavourite = ((data.getString(COL_MOVIE_FAVOURITE)).equalsIgnoreCase("TRUE") ? true : false);
 
         vTitle.setText(title);
         vsummary.setText(overview);
@@ -168,6 +180,48 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                 }
             });
         }
+
+
+        // update movie to favourite in local db, when favourite button is clicked
+        buttonFavourite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ContentValues updatedValues = new ContentValues();
+                Toast toast;
+                String buttonLabel;
+
+                // If movie already marked favourite, change button label,
+                // contentvalues, and toast message
+                if (isFavourite) {
+                    buttonLabel = getString(R.string.unfavourite);
+                    buttonFavourite.setText(buttonLabel);
+                    buttonLabel = getString(R.string.mark_as_favourite_text);
+                    updatedValues.put(MovieEntry.COLUMN_FAVOURITE, "FALSE");
+                    toast = Toast.makeText(getActivity(), R.string.marked_as_unfavourite, Toast.LENGTH_SHORT);
+                }else {
+                    buttonLabel = getString(R.string.mark_as_favourite_text);
+                    buttonFavourite.setText(buttonLabel);
+                    buttonLabel = getString(R.string.unfavourite);
+                    updatedValues.put(MovieEntry.COLUMN_FAVOURITE, "TRUE");
+                    toast = Toast.makeText(getActivity(), R.string.marked_as_favourite, Toast.LENGTH_SHORT);
+                }
+
+                String selectionClause = MovieEntry._ID + " = ?" ;
+                String[] selectionArgs = new String[]{movieRowId};
+
+                int count = getActivity().getContentResolver().update(
+                        MovieEntry.CONTENT_URI,
+                        updatedValues,
+                        selectionClause,
+                        selectionArgs
+                );
+
+                if (count > 0) {
+                    buttonFavourite.setText(buttonLabel);
+                    toast.show();
+                }
+            }
+        });
 
     }
 
