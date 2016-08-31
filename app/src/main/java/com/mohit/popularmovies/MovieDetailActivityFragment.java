@@ -181,6 +181,12 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
             });
         }
 
+        if (isFavourite) {
+            buttonFavourite.setText(getString(R.string.unfavourite));
+        }else {
+            buttonFavourite.setText(getString(R.string.mark_as_favourite_text));
+        }
+
 
         // update movie to favourite in local db, when favourite button is clicked
         buttonFavourite.setOnClickListener(new View.OnClickListener() {
