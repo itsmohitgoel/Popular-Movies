@@ -77,8 +77,10 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.IC
         if (actionBar != null) {
             if (sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_popularity_value))) {
                 actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_popularity_label)));
-            } else {
+            } else if(sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_rating_value))){
                 actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_rating_label)));
+            } else if (sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_favourite_value))) {
+                actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_favourite_label)));
             }
         }
     }

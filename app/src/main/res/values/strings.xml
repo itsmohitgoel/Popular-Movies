@@ -16,8 +16,10 @@
     
     <string name="pref_sort_by_popularity_label">Most Popular</string>
     <string name="pref_sort_by_rating_label">Highest Rated</string>
+    <string name="pref_sort_by_favourite_label">Favourite</string>
     <string name="pref_sort_by_popularity_value">popular</string>
     <string name="pref_sort_by_rating_value">top_rated</string>
+    <string name="pref_sort_by_favourite_value">favourite</string>
 
 </resources>
 

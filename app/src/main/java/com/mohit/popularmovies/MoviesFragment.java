@@ -103,7 +103,7 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
     }
 
     /**
-     * Download Movies via AsyncTask, after checking the
+     * Download Movies,Trailers via AsyncTask, after checking the
      * n/w status, and getting user defined sort order settings
      */
     private void updateMoviesData() {
@@ -181,8 +181,10 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         String sortOrderDB = "";
         if (sort_by_preference.equals(getString(R.string.pref_sort_by_popularity_value))) {
             sortOrderDB = MovieContract.MovieEntry.COLUMN_POPULARITY + " DESC";
-        } else {
+        } else if(sort_by_preference.equals(getString(R.string.pref_sort_by_rating_value))){
             sortOrderDB = MovieContract.MovieEntry.COLUMN_VOTE_AVERAGE + " DESC";
+        } else if (sort_by_preference.equals(getString(R.string.pref_sort_by_favourite_value))) {
+            sortOrderDB = MovieContract.MovieEntry.COLUMN_FAVOURITE + " DESC";
         }
         return sortOrderDB;
     }
