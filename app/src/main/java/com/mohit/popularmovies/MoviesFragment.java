@@ -169,6 +169,11 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
         }
     }
 
+    @Override
+    public void onAsyncStop(Object object) {
+        //Dummy implemention to fullfill interface contract
+    }
+
     /**
      * Return the sorting order to in terms of db 'movie' table
      * column name.

@@ -18,4 +18,5 @@ public interface IAsyncListener {
      * UI, When Async Finish executing.
      */
     public abstract void onAsyncEnd();
+    public abstract void onAsyncStop(Object object);
 }
