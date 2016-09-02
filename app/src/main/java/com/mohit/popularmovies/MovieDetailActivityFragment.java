@@ -32,6 +32,7 @@ import com.squareup.picasso.Picasso;
  */
 public class MovieDetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private ProgressDialog mProgressBar;
+    private String mMovieApiId;
     public static final String LOG_TAG = MovieDetailActivityFragment.class.getSimpleName();
     private static final int MOVIES_LOADER = 0;
     private static final int TRAILER_LOADER = 1;
@@ -50,6 +51,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
             MovieEntry.COLUMN_VOTE_AVERAGE,
             MovieEntry.COLUMN_BACKDROP_PATH,
             MovieEntry.COLUMN_FAVOURITE,
+            MovieEntry.COLUMN_MOVIE_ID,
     };
 
     private static final int COL_MOVIE_ID = 0;
@@ -59,6 +61,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
     private static final int COL_MOVIE_VOTE_AVERAGE = 4;
     private static final int COL_MOVIE_BACKDROP_PATH = 5;
     private static final int COL_MOVIE_FAVOURITE = 6;
+    public static final int COL_MOVIE_API_ID = 7;
 
     //specify the columns for Trailer and define respecitive Projections
     private static final String[] TRAILER_COLUMNS = {
@@ -143,6 +146,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         String rating = data.getString(COL_MOVIE_VOTE_AVERAGE);
         String backdropPath = data.getString(COL_MOVIE_BACKDROP_PATH);
         final boolean isFavourite = ((data.getString(COL_MOVIE_FAVOURITE)).equalsIgnoreCase("TRUE") ? true : false);
+        mMovieApiId = data.getString(COL_MOVIE_API_ID);
 
         vTitle.setText(title);
         vsummary.setText(overview);
@@ -183,7 +187,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
 
         if (isFavourite) {
             buttonFavourite.setText(getString(R.string.unfavourite));
-        }else {
+        } else {
             buttonFavourite.setText(getString(R.string.mark_as_favourite_text));
         }
 
@@ -204,7 +208,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                     buttonLabel = getString(R.string.mark_as_favourite_text);
                     updatedValues.put(MovieEntry.COLUMN_FAVOURITE, "FALSE");
                     toast = Toast.makeText(getActivity(), R.string.marked_as_unfavourite, Toast.LENGTH_SHORT);
-                }else {
+                } else {
                     buttonLabel = getString(R.string.mark_as_favourite_text);
                     buttonFavourite.setText(buttonLabel);
                     buttonLabel = getString(R.string.unfavourite);
@@ -212,7 +216,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
                     toast = Toast.makeText(getActivity(), R.string.marked_as_favourite, Toast.LENGTH_SHORT);
                 }
 
-                String selectionClause = MovieEntry._ID + " = ?" ;
+                String selectionClause = MovieEntry._ID + " = ?";
                 String[] selectionArgs = new String[]{movieRowId};
 
                 int count = getActivity().getContentResolver().update(
