@@ -12,6 +12,7 @@ public class PopConstants {
     public static final String BASE_URL = "http://api.themoviedb.org/3/movie?";
     public static final String SORT_PARAM = "sort_by";
     public static final String TRAILER_PATH = "videos";
+    public static final String REVIEW_PATH = "reviews";
 
     // JSON keys for movie and trailers
     public static final String RESULTS = "results";
@@ -30,6 +31,9 @@ public class PopConstants {
     public static final String TRAILER_SIZE = "size";
     public static final String TRAILER_TYPE = "type";
 
+    public static final String REVIEW_CONTENT = "content";
+    public static final String REVIEW_AUTHOR = "author";
+    public static final String REVIEW_ID = "id";
     //IMAGE Query URls
     public static final String BASE_IMAGE_URL = "http://image.tmdb.org/t/p/w185";
     public static final String BASE_TRAILER_THUMB_URL = "http://img.youtube.com/vi/";

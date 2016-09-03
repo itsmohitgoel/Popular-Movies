@@ -3,6 +3,10 @@
     <string name="action_settings">Settings</string>
     <string name="action_refresh">Refresh</string>
     <string name="title_activity_setteings">Settings</string>
+    <string name="no_internet_connection">No Internet Connection</string>
+    <string name="review_label">See Reviews</string>
+    <string name="no_review">No review available yet.</string>
+
     <string name="mark_as_favourite_text">Mark as Favourite</string>
     <string name="unfavourite">Unfavourite</string>
     <string name="marked_as_favourite">Successfully marked as Favourite</string>
@@ -13,13 +17,14 @@
     <string name="pref_sort_key">sort_by</string>
     <string name="pref_sort_default">popular</string>
     <string name="title_activity_movie_detail">Movie Details</string>
-    
+
     <string name="pref_sort_by_popularity_label">Most Popular</string>
     <string name="pref_sort_by_rating_label">Highest Rated</string>
     <string name="pref_sort_by_favourite_label">Favourite</string>
     <string name="pref_sort_by_popularity_value">popular</string>
     <string name="pref_sort_by_rating_value">top_rated</string>
     <string name="pref_sort_by_favourite_value">favourite</string>
+    <string name="title_activity_review">ReviewActivity</string>
 
 </resources>
 
