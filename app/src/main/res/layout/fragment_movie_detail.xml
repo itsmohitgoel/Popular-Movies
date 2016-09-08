@@ -74,6 +74,15 @@
                 android:background="#5c6bc0"
                 android:text="@string/mark_as_favourite_text"
                 android:textColor="#ffffff" />
+
+            <Button
+                android:id="@+id/button_review"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="#5c6bc0"
+                android:text="@string/review_label"
+                android:textColor="#ffffff" />
         </LinearLayout>
     </LinearLayout>
 

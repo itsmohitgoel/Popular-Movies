@@ -138,6 +138,7 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         TextView vRating = (TextView) getView().findViewById(R.id.textview_move_rating);
         ImageView vPoster = (ImageView) getView().findViewById(R.id.imageView_poster);
         final Button buttonFavourite = (Button) getView().findViewById(R.id.button_mark_as_favourite);
+        Button btnReview = (Button) getView().findViewById(R.id.button_review);
 
         final String movieRowId = data.getString(COL_MOVIE_ID);
         String title = data.getString(COL_MOVIE_TITLE);
@@ -233,6 +234,12 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
             }
         });
 
+        btnReview.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onReviewClick(v);
+            }
+        });
     }
 
     @Override
@@ -292,5 +299,11 @@ public class MovieDetailActivityFragment extends Fragment implements LoaderManag
         public void onLoaderReset(Loader<Cursor> loader) {
 
         }
+    }
+
+    public void onReviewClick(View view) {
+        Intent intent = new Intent(getActivity(), ReviewActivity.class);
+        intent.putExtra(ReviewActivityFragment.MOVIE_ID, mMovieApiId);
+        startActivity(intent);
     }
 }
