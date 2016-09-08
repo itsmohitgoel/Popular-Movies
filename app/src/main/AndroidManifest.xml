@@ -28,9 +28,8 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mohit.popularmovies.MainActivity"/>
-            </activity>
-
+                android:value="com.mohit.popularmovies.MainActivity" />
+        </activity>
         <activity
             android:name=".MovieDetailActivity"
             android:label="@string/title_activity_movie_detail"
@@ -38,12 +37,21 @@
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.mohit.popularmovies.MainActivity"/>
+                android:value="com.mohit.popularmovies.MainActivity" />
         </activity>
 
         <provider
-            android:authorities="com.mohit.popularmovies.app"
-            android:name=".data.MovieProvider" />
+            android:name=".data.MovieProvider"
+            android:authorities="com.mohit.popularmovies.app" />
+
+        <activity
+            android:name=".ReviewActivity"
+            android:label="@string/title_activity_review"
+            android:parentActivityName=".MovieDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.mohit.popularmovies.MovieDetailActivity"/>
+        </activity>
     </application>
 
 </manifest>
