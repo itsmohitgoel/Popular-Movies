@@ -197,11 +197,17 @@ public class MoviesFragment extends Fragment implements IAsyncListener, LoaderMa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = normalizeSortingOrder();
+        String selectionClause = null;
+        String[] selectionArgs = null;
+        if (sortOrder.equals(MovieContract.MovieEntry.COLUMN_FAVOURITE + " DESC")) {
+            selectionClause = MovieContract.MovieEntry.COLUMN_FAVOURITE + " = ?";
+            selectionArgs = new String[]{"TRUE"};
+        }
         CursorLoader cLoader = new CursorLoader(getActivity(),
                 MovieContract.MovieEntry.CONTENT_URI,
                 MOVIE_COLUMNS,
-                null,
-                null,
+                selectionClause,
+                selectionArgs,
                 sortOrder);
         return cLoader;
     }
