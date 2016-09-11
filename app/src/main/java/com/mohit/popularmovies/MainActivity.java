@@ -18,6 +18,7 @@ import com.mohit.popularmovies.utils.PopUtility;
 public class MainActivity extends AppCompatActivity implements MoviesFragment.ICallback {
     private String mSortingSetting;
     private boolean mTwoPane;
+    private boolean mIsFirstExecution;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.IC
         setSupportActionBar(toolbar);
 
         mSortingSetting = PopUtility.getSortingPreferrence(this);
+        mIsFirstExecution = true;
 
         if (findViewById(R.id.movie_detail_container) != null) {
             mTwoPane = true;
@@ -77,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.IC
         if (actionBar != null) {
             if (sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_popularity_value))) {
                 actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_popularity_label)));
-            } else if(sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_rating_value))){
+            } else if (sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_rating_value))) {
                 actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_rating_label)));
             } else if (sortOrder.equalsIgnoreCase(getString(R.string.pref_sort_by_favourite_value))) {
                 actionBar.setTitle(String.format("%s Movies", getString(R.string.pref_sort_by_favourite_label)));
@@ -90,12 +92,13 @@ public class MainActivity extends AppCompatActivity implements MoviesFragment.IC
         super.onResume();
         String sortPreference = PopUtility.getSortingPreferrence(this);
 
-        if (sortPreference != null && !sortPreference.equals(mSortingSetting)) {
+        if (mIsFirstExecution || (sortPreference != null && !sortPreference.equals(mSortingSetting))) {
             MoviesFragment fragment = (MoviesFragment) getSupportFragmentManager().findFragmentById(R.id.movies_fragment);
             if (fragment != null) {
                 fragment.onSortingChaged();
             }
             mSortingSetting = sortPreference;
+            mIsFirstExecution = false;
         }
     }
 
