@@ -24,22 +24,31 @@ public class MoviesAdapter extends CursorAdapter {
         super(context, c, flags);
     }
 
-    /*
-        These views will be reused as needed
+    /**
+     * Cache of Children view for a movie item object
      */
+    private static class ViewHolder {
+        final ImageView moviePoseterView;
+
+        public ViewHolder(View view) {
+            moviePoseterView = (ImageView) view.findViewById(R.id.grid_item_movie_imageView);
+        }
+    }
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup parent) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.grid_item_movie, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+        view.setTag(holder);
 
         return view;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        ImageView imageView = (ImageView) view.findViewById(R.id.grid_item_movie_imageView);
+        ViewHolder viewHolder = (ViewHolder) view.getTag();
         String moviePosterURL = cursor.getString(MoviesFragment.COL_POSTER_PATH);
 
-        Picasso.with(context).load(PopConstants.BASE_IMAGE_URL + moviePosterURL).into(imageView);
+        Picasso.with(context).load(PopConstants.BASE_IMAGE_URL + moviePosterURL).into(viewHolder.moviePoseterView);
     }
 }
