@@ -1,6 +1,41 @@
 # Popular-Movies
-This app displays structured info about various movies, from themoviedb.org. Users can also sort the list as they desire like top rated or most popular.
+A simple Android app that helps user to discover structured info about various movies, from themoviedb.org. This is a 
+Project 1 and Project 2 of Udacity's Android Developer Nanodegree.
 
-# Require themoviedb.org API KEY
-Please register and request your own API Key from https://www.themoviedb.org/. After obtaining the key, paste it
-in line number 9, of file PopConstants.java as a string value.
+### Features
+- Discover the most popular, highest rated or most rated movies.
+- Watch movies trailers and teasers
+- Mark movies as favorites
+- offline work
+- Material Design
+- UI optimized for tablet
+
+## Screenshots
+
+![movies_grid_phone](https://cloud.githubusercontent.com/assets/13984005/19427584/8b622e0a-9462-11e6-927e-e59609435c84.png)
+
+![movies_detail_phone](https://cloud.githubusercontent.com/assets/13984005/19427608/b4478004-9462-11e6-92c5-b36613b6de0a.png)
+
+![screen-tablet](https://cloud.githubusercontent.com/assets/13984005/19427612/bb2d6118-9462-11e6-97ee-3b918466fefc.png)
+
+## Developer Setup
+
+### Requirements
+- Java 7 or Above
+- Latest Version of Android SDK and Android Build Tools
+
+### API Key
+1. The app uses themoviedb.org API to get movie information and posters. You must provide your own API key
+    in order to build the app.
+2. Please register and request your own API Key from https://www.themoviedb.org/. 
+3. After obtaining the key, just paste it in line number 9, of file PopConstants.java as a string value.
+
+#### Building 
+  You can build the App using Latest version of Android Studio
+  
+### Testing
+This project integrates a combination of local unit tests, instrumented tests and code analysis tools(such as stetho library).  
+
+Just define your app package name in Test Andoid App Configuration to ensure that project code is valid and stable.
+Then hit run command. This will run Unit tests on the JVM, instrumented tests 
+on the connected device(or emulator).
