@@ -12,9 +12,8 @@ Project 1 and Project 2 of Udacity's Android Developer Nanodegree.
 
 ## Screenshots
 
-![movies_grid_phone](https://cloud.githubusercontent.com/assets/13984005/19427584/8b622e0a-9462-11e6-927e-e59609435c84.png)
 
-![movies_detail_phone](https://cloud.githubusercontent.com/assets/13984005/19427608/b4478004-9462-11e6-92c5-b36613b6de0a.png)
+![movies_grid_phone](https://cloud.githubusercontent.com/assets/13984005/19886351/d241d806-a048-11e6-8cd0-d03fb5644872.png)  ![movies_detail_phone](https://cloud.githubusercontent.com/assets/13984005/19886382/0194a5fc-a049-11e6-94eb-8551dd7dee92.png)
 
 ![screen-tablet](https://cloud.githubusercontent.com/assets/13984005/19427612/bb2d6118-9462-11e6-97ee-3b918466fefc.png)
 
